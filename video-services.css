@@ -1,0 +1,241 @@
+/* ==========================================
+   VIDEO SERVICES PAGE - Editorial Stack
+   ========================================== */
+
+/* This page scrolls normally (unlike the fixed-viewport home/photo pages) */
+body {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: auto;
+  background-color: #f4f4f4;
+}
+
+.vs-page {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 9rem 3rem 26rem 3rem;
+}
+
+/* ---------- Hero ---------- */
+.vs-hero {
+  margin-bottom: 6rem;
+}
+
+.vs-hero-eyebrow {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: #999;
+  margin-bottom: 1.2rem;
+}
+
+.vs-hero-title {
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  color: #111;
+  margin: 0 0 1.5rem 0;
+}
+
+.vs-hero-title em {
+  font-style: italic;
+  font-weight: 300;
+}
+
+.vs-hero-sub {
+  max-width: 32rem;
+  font-size: 1.05rem;
+  font-weight: 300;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* ---------- Section list ---------- */
+.vs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.vs-section {
+  display: flex;
+  align-items: center;
+  gap: 3.5rem;
+  padding: 4rem 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.vs-section.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Alternate media left/right, magazine-spread style */
+.vs-section:nth-child(even) {
+  flex-direction: row-reverse;
+}
+
+.vs-index {
+  flex-shrink: 0;
+  font-size: 5.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(0, 0, 0, 0.18);
+  letter-spacing: -0.02em;
+  align-self: flex-start;
+  margin-top: 0.5rem;
+}
+
+.vs-media {
+  flex-shrink: 0;
+  width: 300px;
+  height: 380px;
+  position: relative;
+  background: #fff;
+  padding: 0.5rem 0.5rem 1.6rem 0.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.vs-section:nth-child(odd) .vs-media { transform: rotate(-2deg); }
+.vs-section:nth-child(even) .vs-media { transform: rotate(2deg); }
+
+.vs-section:hover .vs-media {
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.16);
+  transform: rotate(0deg) scale(1.02);
+}
+
+.vs-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.vs-media-caption {
+  position: absolute;
+  bottom: 6%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 300;
+  font-style: italic;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.vs-content {
+  min-width: 0;
+}
+
+.vs-title {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #111;
+  margin: 0 0 0.9rem 0;
+}
+
+.vs-blurb {
+  max-width: 34rem;
+  font-size: 1rem;
+  font-weight: 300;
+  color: #666;
+  line-height: 1.6;
+  margin: 0 0 1.6rem 0;
+}
+
+.vs-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+/* Tag pills — hover and hold to fill; the fill completing (not just
+   hovering) is what triggers navigation, so a passing-by hover doesn't
+   accidentally jump to a page */
+.vs-tag {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #555;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.vs-section:hover .vs-tag {
+  border-color: rgba(0, 0, 0, 0.32);
+  color: #111;
+}
+
+.vs-tag-fill {
+  position: absolute;
+  inset: 0;
+  background: #111;
+  border-radius: inherit;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.9s linear;
+  z-index: 0;
+}
+
+.vs-tag:hover .vs-tag-fill {
+  transform: scaleX(1);
+}
+
+.vs-tag-label {
+  position: relative;
+  z-index: 1;
+  transition: color 0.35s ease 0.15s;
+}
+
+.vs-tag:hover .vs-tag-label {
+  color: #fff;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 860px) {
+  .vs-page {
+    padding: 8rem 1.5rem 24rem 1.5rem;
+  }
+
+  .vs-section,
+  .vs-section:nth-child(even) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .vs-index {
+    font-size: 3.2rem;
+  }
+
+  .vs-media {
+    width: 100%;
+    max-width: 320px;
+    height: 340px;
+  }
+
+  .vs-section:nth-child(odd) .vs-media,
+  .vs-section:nth-child(even) .vs-media {
+    transform: rotate(0deg);
+  }
+}

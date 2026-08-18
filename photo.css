@@ -1,0 +1,373 @@
+/* ==========================================
+   PHOTO PAGE - Escalator Gallery Styles
+   ========================================== */
+
+.photo-gallery-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+}
+
+.photo-gallery-track {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0 2rem;
+  will-change: transform;
+  align-items: center;
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
+/* Individual photo card - film reel frame style */
+.photo-card {
+  flex-shrink: 0;
+  width: 22vw;
+  height: 82vh;
+  position: relative;
+  will-change: transform;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  background: #fff;
+  padding: 0.5rem 0.5rem 2rem 0.5rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.photo-card:hover {
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+
+.photo-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Name overlay on each card */
+.photo-card-name {
+  position: absolute;
+  bottom: 20%;
+  left: 50%;
+  transform: translateX(-50%) rotate(-5deg);
+  color: white;
+  font-size: 2rem;
+  font-weight: 300;
+  font-style: italic;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.6);
+  pointer-events: none;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+/* Video services card — one card in the carousel links out to the full
+   video services page instead of opening a name caption */
+.video-card-overlay {
+  position: absolute;
+  inset: 0.5rem 0.5rem 2rem 0.5rem;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.55) 100%);
+  pointer-events: none;
+}
+
+.video-card-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4.5rem;
+  height: 4.5rem;
+  color: #fff;
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.4));
+  pointer-events: none;
+  transition: transform 0.3s ease;
+}
+
+.video-card:hover .video-card-play {
+  transform: translate(-50%, -50%) scale(1.12);
+}
+
+.video-card-play svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.video-card .photo-card-name {
+  bottom: auto;
+  top: 12%;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 1.3rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transform: translateX(-50%) rotate(0deg);
+}
+
+/* Bottom bar layout */
+.photo-bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 2rem 1.8rem 2rem;
+  pointer-events: none;
+}
+
+/* Grounding scrim so bottom text stays legible over any photo */
+.photo-bottom-bar::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 280px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0) 100%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.photo-bottom-bar > * {
+  pointer-events: auto;
+}
+
+.photo-bottom-bar .corner-text {
+  position: static;
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+}
+
+.photo-bottom-bar .corner-text a {
+  color: inherit;
+}
+
+/* Photo menu section - PHOTO label + sub categories inline */
+.photo-menu-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.photo-menu-main {
+  position: relative;
+}
+
+/* Photo label + subcategories in a row */
+.photo-label-row {
+  display: none;
+  align-items: baseline;
+  gap: 1.5rem;
+}
+
+.photo-label {
+  font-size: 2rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: #333;
+  text-transform: uppercase;
+}
+
+/* Sub menu - inline with PHOTO */
+.photo-submenu {
+  display: flex;
+  gap: 1.2rem;
+  align-items: baseline;
+}
+
+.submenu-item {
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  transition: color 0.3s ease;
+}
+
+.submenu-item.active {
+  color: #fff;
+  font-weight: 600;
+}
+
+.submenu-item:hover {
+  color: #fff;
+}
+
+/* Watch-dial nav: a compact circle with two concentric ring lines and the
+   menu titles nested in the track between them, like hour markers on a bezel */
+.photo-page-menu {
+  position: fixed;
+  bottom: -420px; /* Shifted further down than a plain centered half-circle */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 640px;
+  height: 640px;
+  border-radius: 50%;
+  z-index: 5;
+}
+
+/* Faint flat tint across the track only — no blur, so it can never drift out
+   of alignment with the two ring lines the way a backdrop-blur glow could.
+   Inset slightly from both ring lines so it never crowds/dulls their edges. */
+.photo-page-menu .glass-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  -webkit-mask: radial-gradient(circle, transparent 198px, black 208px, black 262px, transparent 272px);
+  mask: radial-gradient(circle, transparent 198px, black 208px, black 262px, transparent 272px);
+  pointer-events: none;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+/* Outer ring line — radius 280px */
+.photo-page-menu .bangle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 560px;
+  height: 560px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.35), 0 0 20px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+
+/* Inner ring line — radius 190px. Titles sit in the track between this and .bangle.
+   Given its own dark shadow (like the outer ring) so it stays visible against
+   any background instead of relying on a single low-contrast white stroke. */
+.photo-page-menu .bangle-inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 380px;
+  height: 380px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3), 0 0 10px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+
+/* Bright wash concentrated at the very top of the track, right where the
+   focused title sits — reuses the same track mask as .glass-ring so it
+   never bleeds outside the ring, but its own gradient is centered near the
+   top instead of spread evenly, making that segment read as "lit up". */
+.photo-page-menu .dial-highlight {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 13%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 30%);
+  -webkit-mask: radial-gradient(circle, transparent 198px, black 208px, black 262px, transparent 272px);
+  mask: radial-gradient(circle, transparent 198px, black 208px, black 262px, transparent 272px);
+  pointer-events: none;
+}
+
+.photo-page-menu .menu-items {
+  position: absolute;
+  top: 50%; /* Center of the dial */
+  left: 50%;
+  width: 0;
+  height: 0;
+  will-change: transform;
+}
+
+/* Zero-size anchor at radius 235px — the midpoint of the 190–280px track — rotation pivots here */
+.photo-page-menu .menu-item {
+  position: absolute;
+  top: -235px;
+  left: 0;
+  width: 0;
+  height: 0;
+  transform-origin: 0 235px; /* Pivot around the exact center of the dial */
+  pointer-events: none;
+  will-change: transform, opacity;
+  bottom: auto !important;
+  right: auto !important;
+}
+
+/* Text is centered directly on the anchor point, so every title sits in the
+   middle of the track between the two ring lines.
+   White + dark shadow keeps it legible over both bright and dark photos. */
+.photo-page-menu .menu-item span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  text-align: center;
+  pointer-events: auto;
+  opacity: 0.55;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6), 0 2px 12px rgba(0, 0, 0, 0.45);
+  transition: text-shadow 0.3s ease;
+}
+
+.photo-page-menu .menu-item.active span {
+  color: #fff;
+  font-weight: 600;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.75), 0 2px 16px rgba(0, 0, 0, 0.55);
+}
+
+/* Persistent "you are here" marker — independent of ring rotation, so it
+   stays put even while another item is scrolled to the top for preview */
+.photo-page-menu .menu-item.current-page span::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -10px;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
+  pointer-events: none;
+}
+
+/* Center icon — swaps to match whichever title is currently focused.
+   Deliberately NOT nested inside .photo-page-menu: that element has its own
+   transform, which would make a position:fixed child track its box instead
+   of the viewport. Kept as an independent sibling so it stays put regardless
+   of how the ring's own size/offset is tuned. */
+.dial-icon {
+  position: fixed;
+  left: 50%;
+  bottom: 34px;
+  transform: translate(-50%, 0) scale(0.85);
+  width: 38px;
+  height: 38px;
+  color: #fff;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.55));
+  z-index: 6;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.dial-icon.is-visible {
+  opacity: 0.92;
+  transform: translate(-50%, 0) scale(1);
+}
+
+.dial-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video Showcase | 213 MEECH</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./photo.css">
+    <link rel="stylesheet" href="./video-services.css">
+    <link rel="stylesheet" href="./tag.css">
+  </head>
+  <body>
+    <!-- Top Left Corner Text -->
+    <div class="corner-text top-left">
+      <span>IT'S MEECH'S</span><br>
+      <span>TIME</span>
+    </div>
+
+    <!-- Top Center Logo -->
+    <div class="logo">
+      <div class="logo-text">
+        <span style="font-size: 2rem; font-weight: 700; letter-spacing: -0.05em; display: block; line-height: 0.8; text-align: center;">213</span>
+        <span style="font-size: 0.9rem; font-weight: 700; background: #000; color: #fff; padding: 2px 8px; border-radius: 10px; display: inline-block;">MEECH</span>
+      </div>
+    </div>
+
+    <!-- Top Right Corner Links -->
+    <div class="corner-text top-right">
+      <a href="#">EMAIL</a>
+      <a href="#">TWITTER</a>
+      <a href="#">FACEBOOK</a>
+      <a href="#">INSTAGRAM</a>
+    </div>
+
+    <!-- Content -->
+    <main class="tag-page">
+      <nav class="tag-breadcrumb">
+        <a href="./video-services.html">Services</a>
+        <span>/</span>
+        <a href="./video-services.html" id="tag-breadcrumb-category">Category</a>
+        <span>/</span>
+        <span class="current" id="tag-breadcrumb-current">Tag</span>
+      </nav>
+
+      <!-- Full-bleed autoplaying reel behind the title -->
+      <div class="tag-hero-video-wrap">
+        <video id="tag-hero-video" class="tag-hero-video" autoplay muted loop playsinline></video>
+        <div class="tag-hero-video-scrim"></div>
+        <button class="tag-hero-mute is-muted" id="tag-hero-mute" aria-label="Toggle sound">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 9.5v5h3.5L12 18V6L7.5 9.5H4Z"/>
+            <path class="mute-line" d="M17 8.5 21 15.5M21 8.5 17 15.5"/>
+            <path class="wave-line" d="M16 9.2a4 4 0 0 1 0 5.6M18.5 7a7.5 7.5 0 0 1 0 10"/>
+          </svg>
+        </button>
+        <div class="tag-hero-video-content">
+          <span class="tag-hero-eyebrow" id="tag-hero-eyebrow">Category — Video Showcase</span>
+          <h1 class="tag-hero-title" id="tag-hero-title">Tag</h1>
+        </div>
+      </div>
+
+      <p class="tag-hero-blurb" id="tag-hero-blurb"></p>
+
+      <div class="tag-grid" id="tag-grid">
+        <!-- showcase items injected by tag.js -->
+      </div>
+    </main>
+
+    <!-- Bottom bar with shared nav dial -->
+    <div class="photo-bottom-bar">
+      <div class="corner-text bottom-left">
+        © All rights reserved. 2026
+      </div>
+
+      <div class="photo-menu-section">
+        <div class="bottom-menu photo-page-menu">
+          <div class="glass-ring"></div>
+          <div class="bangle"></div>
+          <div class="bangle-inner"></div>
+          <div class="dial-highlight"></div>
+          <div class="menu-items" id="rainbow-menu">
+            <a href="./index.html" class="menu-item" data-index="0"><span>HOME</span></a>
+            <a href="#" class="menu-item" data-index="1"><span>ABOUT US</span></a>
+            <a href="#" class="menu-item" data-index="2"><span>PORTFOLIO</span></a>
+            <a href="./photo.html" class="menu-item active" data-index="3"><span>SERVICES</span></a>
+            <a href="#" class="menu-item" data-index="4"><span>SUBSCRIPTION</span></a>
+            <a href="#" class="menu-item" data-index="5"><span>BOOK</span></a>
+          </div>
+        </div>
+        <div class="dial-icon" id="dial-icon" aria-hidden="true"></div>
+      </div>
+
+      <div class="corner-text bottom-right">
+        Site by TDP
+      </div>
+    </div>
+
+    <script type="module" src="/tag.js"></script>
+  </body>
+</html>

@@ -1,0 +1,169 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+  overflow: hidden; /* Hide scrollbars completely */
+  height: 100vh;
+  margin: 0;
+}
+
+.scroll-container {
+  display: none; /* No longer needed for infinite wheel scroll */
+}
+
+/* Vanta.js clouds — the backmost layer; the gallery canvas above it stays
+   transparent so this shows through */
+#vanta-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Canvas styling */
+#webgl-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1; /* Below UI elements */
+  pointer-events: none; /* Let clicks pass through if needed, though menu is z-indexed higher */
+}
+
+/* UI Overlay Elements */
+.corner-text {
+  position: fixed;
+  z-index: 10;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+}
+
+.top-left {
+  top: 2rem;
+  left: 2rem;
+  transform: rotate(-15deg);
+  transform-origin: top left;
+  line-height: 1.2;
+}
+
+.top-right {
+  top: 2rem;
+  right: 2rem;
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  gap: 0.25rem;
+}
+
+.top-right a {
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.3s ease;
+}
+
+.top-right a:hover {
+  opacity: 0.6;
+}
+
+.bottom-left {
+  bottom: 2rem;
+  left: 2rem;
+}
+
+.bottom-right {
+  bottom: 2rem;
+  right: 2rem;
+}
+
+/* Logo */
+.logo {
+  position: fixed;
+  top: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Bottom Menu */
+.bottom-menu {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 800px;
+  height: 200px; /* Taller space for the arc */
+  z-index: 10;
+}
+
+.menu-items {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.menu-item {
+  position: absolute;
+  text-decoration: none;
+  color: #aaa; /* Default greyed out color */
+  font-size: 1.2rem;
+  font-weight: 300;
+  transition: color 0.3s ease, font-size 0.3s ease, transform 0.3s ease;
+  text-transform: uppercase;
+  transform-origin: center;
+}
+
+/* Position in an arch */
+.menu-item[data-index="0"] { /* ABOUT */
+  bottom: 0;
+  left: 10%;
+}
+.menu-item[data-index="1"] { /* VIDEO */
+  bottom: 40px;
+  left: 30%;
+}
+.menu-item[data-index="2"] { /* PHOTO */
+  bottom: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.menu-item[data-index="3"] { /* HOME */
+  bottom: 40px;
+  right: 30%;
+}
+.menu-item[data-index="4"] { /* BOOK */
+  bottom: 0;
+  right: 10%;
+}
+
+.menu-item.active {
+  color: #333;
+  font-size: 1.5rem; /* Larger font for active item */
+}
+
+.menu-item:hover {
+  color: #333;
+}
+
+/* SVG Line Canvas */
+.menu-line-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}

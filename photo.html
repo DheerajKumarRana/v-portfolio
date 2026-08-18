@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Photo Gallery | 213 MEECH</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./photo.css">
+  </head>
+  <body>
+    <!-- Top Left Corner Text -->
+    <div class="corner-text top-left">
+      <span>IT'S MEECH'S</span><br>
+      <span>TIME</span>
+    </div>
+
+    <!-- Top Center Logo -->
+    <div class="logo">
+      <div class="logo-text">
+        <span style="font-size: 2rem; font-weight: 700; letter-spacing: -0.05em; display: block; line-height: 0.8; text-align: center;">213</span>
+        <span style="font-size: 0.9rem; font-weight: 700; background: #000; color: #fff; padding: 2px 8px; border-radius: 10px; display: inline-block;">MEECH</span>
+      </div>
+    </div>
+
+    <!-- Top Right Corner Links -->
+    <div class="corner-text top-right">
+      <a href="#">EMAIL</a>
+      <a href="#">TWITTER</a>
+      <a href="#">FACEBOOK</a>
+      <a href="#">INSTAGRAM</a>
+    </div>
+
+    <!-- Photo Gallery -->
+    <div class="photo-gallery-wrapper">
+      <div class="photo-gallery-track" id="gallery-track">
+        <!-- Images will be populated by JS -->
+      </div>
+    </div>
+
+    <!-- Bottom Section with Sub-menu -->
+    <div class="photo-bottom-bar">
+      <div class="corner-text bottom-left">
+        © All rights reserved. 2026
+      </div>
+
+      <div class="photo-menu-section">
+        <div class="bottom-menu photo-page-menu">
+          <div class="glass-ring"></div>
+          <div class="bangle"></div>
+          <div class="bangle-inner"></div>
+          <div class="dial-highlight"></div>
+          <div class="menu-items" id="rainbow-menu">
+            <a href="./index.html" class="menu-item" data-index="0"><span>HOME</span></a>
+            <a href="#" class="menu-item" data-index="1"><span>ABOUT US</span></a>
+            <a href="#" class="menu-item" data-index="2"><span>PORTFOLIO</span></a>
+            <a href="./photo.html" class="menu-item active" data-index="3"><span>SERVICES</span></a>
+            <a href="#" class="menu-item" data-index="4"><span>SUBSCRIPTION</span></a>
+            <a href="#" class="menu-item" data-index="5"><span>BOOK</span></a>
+          </div>
+        </div>
+        <div class="dial-icon" id="dial-icon" aria-hidden="true"></div>
+        <div class="photo-label-row">
+          <div class="photo-submenu">
+            <a href="#" class="submenu-item active">ALL</a>
+            <a href="#" class="submenu-item">BEAUTY</a>
+            <a href="#" class="submenu-item">BRANDS</a>
+            <a href="#" class="submenu-item">ARTISTE</a>
+            <a href="#" class="submenu-item">FASHION</a>
+            <a href="#" class="submenu-item">MAGAZINES</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="corner-text bottom-right">
+        Site by TDP
+      </div>
+    </div>
+
+    <script type="module" src="/photo.js"></script>
+  </body>
+</html>

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video Services | 213 MEECH</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./photo.css">
+    <link rel="stylesheet" href="./video-services.css">
+  </head>
+  <body>
+    <!-- Top Left Corner Text -->
+    <div class="corner-text top-left">
+      <span>IT'S MEECH'S</span><br>
+      <span>TIME</span>
+    </div>
+
+    <!-- Top Center Logo -->
+    <div class="logo">
+      <div class="logo-text">
+        <span style="font-size: 2rem; font-weight: 700; letter-spacing: -0.05em; display: block; line-height: 0.8; text-align: center;">213</span>
+        <span style="font-size: 0.9rem; font-weight: 700; background: #000; color: #fff; padding: 2px 8px; border-radius: 10px; display: inline-block;">MEECH</span>
+      </div>
+    </div>
+
+    <!-- Top Right Corner Links -->
+    <div class="corner-text top-right">
+      <a href="#">EMAIL</a>
+      <a href="#">TWITTER</a>
+      <a href="#">FACEBOOK</a>
+      <a href="#">INSTAGRAM</a>
+    </div>
+
+    <!-- Editorial content -->
+    <main class="vs-page">
+      <section class="vs-hero">
+        <span class="vs-hero-eyebrow">213 MEECH — SERVICES</span>
+        <h1 class="vs-hero-title">Video <em>Production</em></h1>
+        <p class="vs-hero-sub">Seven kinds of stories, one crew behind the lens. Scroll to see what we shoot.</p>
+      </section>
+
+      <div class="vs-list" id="vs-list">
+        <!-- sections injected by video-services.js -->
+      </div>
+    </main>
+
+    <!-- Bottom bar with shared nav dial -->
+    <div class="photo-bottom-bar">
+      <div class="corner-text bottom-left">
+        © All rights reserved. 2026
+      </div>
+
+      <div class="photo-menu-section">
+        <div class="bottom-menu photo-page-menu">
+          <div class="glass-ring"></div>
+          <div class="bangle"></div>
+          <div class="bangle-inner"></div>
+          <div class="dial-highlight"></div>
+          <div class="menu-items" id="rainbow-menu">
+            <a href="./index.html" class="menu-item" data-index="0"><span>HOME</span></a>
+            <a href="#" class="menu-item" data-index="1"><span>ABOUT US</span></a>
+            <a href="#" class="menu-item" data-index="2"><span>PORTFOLIO</span></a>
+            <a href="./photo.html" class="menu-item active" data-index="3"><span>SERVICES</span></a>
+            <a href="#" class="menu-item" data-index="4"><span>SUBSCRIPTION</span></a>
+            <a href="#" class="menu-item" data-index="5"><span>BOOK</span></a>
+          </div>
+        </div>
+        <div class="dial-icon" id="dial-icon" aria-hidden="true"></div>
+      </div>
+
+      <div class="corner-text bottom-right">
+        Site by TDP
+      </div>
+    </div>
+
+    <script type="module" src="/video-services.js"></script>
+  </body>
+</html>
