@@ -27,19 +27,23 @@ export function initDial() {
 
   // Position items around a genuine half-ring
   const archAngleSpacing = 34;
-  const centerIndex = Math.floor(numMenuItems / 2);
 
   // Whichever item already carries "active" in the markup is this page's
   // actual current page — it gets a permanent marker (currentPageIndex) that
   // never moves, separate from "active", which now means "focused at the
   // top of the ring" and follows whatever the user has scrolled to.
-  let currentPageIndex = centerIndex;
+  // Angles are assigned relative to THIS item (not a fixed array-middle
+  // index), so whichever page you're on always starts centered with its
+  // neighbors spread evenly on both sides — otherwise a page whose item
+  // sits early in the list (e.g. Home, first in the array) would load with
+  // everything bunched to one side instead of looking balanced.
+  let currentPageIndex = Math.floor(numMenuItems / 2);
   mainMenuItems.forEach((item, i) => {
     if (item.classList.contains('active')) currentPageIndex = i;
   });
 
   mainMenuItems.forEach((item, i) => {
-    const baseAngle = (i - centerIndex) * archAngleSpacing;
+    const baseAngle = (i - currentPageIndex) * archAngleSpacing;
     item.dataset.baseAngle = baseAngle;
     item.classList.remove('active');
     item._hoverCurrent = 0;
@@ -58,22 +62,26 @@ export function initDial() {
     const osc = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
 
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.05);
+    // A soft sine "chime" instead of the harsh triangle-wave click — gentle
+    // attack, smooth decay, no sharp edges in the waveform or the envelope
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(660, audioCtx.currentTime + 0.09);
 
-    gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+    gainNode.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.1, audioCtx.currentTime + 0.015);
+    gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.16);
 
     osc.connect(gainNode);
     gainNode.connect(audioCtx.destination);
 
     osc.start();
-    osc.stop(audioCtx.currentTime + 0.05);
+    osc.stop(audioCtx.currentTime + 0.17);
   }
 
-  // Swaps the center icon to match whichever item is focused, with a quick
-  // fade+scale crossfade rather than an abrupt swap
+  // Swaps the center icon to match whichever item is focused. Dips to a
+  // low opacity (never fully gone) and back rather than a hard blink to
+  // nothing, so the swap reads as a smooth crossfade instead of a "popup"
   let iconSwapTimeout;
   function setIcon(index) {
     if (!iconEl) return;
@@ -83,11 +91,12 @@ export function initDial() {
     if (!svg) return;
 
     clearTimeout(iconSwapTimeout);
-    iconEl.classList.remove('is-visible');
+    iconEl.classList.add('is-swapping');
     iconSwapTimeout = setTimeout(() => {
       iconEl.innerHTML = svg;
       iconEl.classList.add('is-visible');
-    }, 140);
+      iconEl.classList.remove('is-swapping');
+    }, 90);
   }
 
   const initialBaseAngle = parseFloat(mainMenuItems[currentPageIndex].dataset.baseAngle);
@@ -200,4 +209,45 @@ export function initDial() {
   // Set initial active
   mainMenuItems[activeMenuIndex].classList.add('active');
   animateArch();
+
+  // ==========================================
+  // REVEAL ON HOVER — pages that wrap the dial in .photo-bottom-bar have
+  // real scrollable content behind it, so the ring stays tucked below the
+  // fold and only slides up when the cursor rests within ~150px of the
+  // bottom edge. Scrolling immediately hides it again so it never blocks
+  // the view. Pages without that wrapper (index.html) keep the dial
+  // permanently visible, matching how it's always worked there.
+  // The center icon is deliberately NOT part of this — it stays visible
+  // regardless of hover/scroll state.
+  // ==========================================
+  const bottomBar = document.querySelector('.photo-bottom-bar');
+  const canHoverDial = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  function setDialActive(active) {
+    menuContainer.classList.toggle('is-dial-active', active);
+  }
+
+  // Touch devices have no persistent hover/mousemove signal to reveal the
+  // dial with, so it must just stay visible there — same as index.html
+  if (bottomBar && canHoverDial) {
+    const REVEAL_ZONE_PX = 150;
+    let isActive = false;
+
+    window.addEventListener('mousemove', (e) => {
+      const shouldBeActive = window.innerHeight - e.clientY < REVEAL_ZONE_PX;
+      if (shouldBeActive !== isActive) {
+        isActive = shouldBeActive;
+        setDialActive(isActive);
+      }
+    });
+
+    window.addEventListener('scroll', () => {
+      if (isActive) {
+        isActive = false;
+        setDialActive(false);
+      }
+    }, { passive: true });
+  } else {
+    setDialActive(true);
+  }
 }

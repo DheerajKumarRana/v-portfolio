@@ -10,12 +10,23 @@ body {
   background-color: #f4f4f4;
 }
 
+/* Vanta.js topology backdrop — fixed behind everything else on the page */
+#vanta-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+}
+
 .vs-page {
   position: relative;
   z-index: 2;
-  max-width: 1200px;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 9rem 3rem 26rem 3rem;
+  padding: 6.5rem 2rem 26rem 2rem;
 }
 
 /* ---------- Hero ---------- */
@@ -33,9 +44,10 @@ body {
 }
 
 .vs-hero-title {
+  font-family: 'Poppins', sans-serif;
   font-size: clamp(3rem, 8vw, 6rem);
-  font-weight: 600;
-  letter-spacing: -0.03em;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   line-height: 0.95;
   color: #111;
   margin: 0 0 1.5rem 0;
@@ -44,6 +56,68 @@ body {
 .vs-hero-title em {
   font-style: italic;
   font-weight: 300;
+}
+
+/* RGB-split glitch, scoped to each word individually — "Video" (bold) and
+   "Production" (italic/light) have different styling, so a single glitch
+   copy of the whole heading doesn't line up with either one. Each word
+   gets its own position:relative + pseudo-elements, which then inherit
+   that specific word's own font-style/weight automatically. */
+.glitch-word {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch-word::before,
+.glitch-word::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #111;
+  overflow: hidden;
+}
+
+.glitch-word::before {
+  left: -2px;
+  text-shadow: 1px 0 blue;
+  clip: rect(0, 9999px, 0, 0);
+  animation: vs-title-glitch-2 3s infinite linear alternate-reverse;
+}
+
+.glitch-word::after {
+  left: 2px;
+  text-shadow: -1px 0 red;
+  clip: rect(0, 9999px, 0, 0);
+  animation: vs-title-glitch-1 2s infinite linear alternate-reverse;
+}
+
+@keyframes vs-title-glitch-1 {
+  0%   { clip: rect(18px, 9999px, 16px, 0); }
+  10%  { clip: rect(48px, 9999px, 117px, 0); }
+  20%  { clip: rect(46px, 9999px, 53px, 0); }
+  30%  { clip: rect(76px, 9999px, 129px, 0); }
+  40%  { clip: rect(100px, 9999px, 80px, 0); }
+  50%  { clip: rect(78px, 9999px, 79px, 0); }
+  60%  { clip: rect(83px, 9999px, 108px, 0); }
+  70%  { clip: rect(79px, 9999px, 68px, 0); }
+  80%  { clip: rect(76px, 9999px, 78px, 0); }
+  90%  { clip: rect(28px, 9999px, 118px, 0); }
+  100% { clip: rect(103px, 9999px, 15px, 0); }
+}
+
+@keyframes vs-title-glitch-2 {
+  0%   { clip: rect(80px, 9999px, 50px, 0); }
+  10%  { clip: rect(8px, 9999px, 80px, 0); }
+  20%  { clip: rect(56px, 9999px, 95px, 0); }
+  30%  { clip: rect(37px, 9999px, 75px, 0); }
+  40%  { clip: rect(128px, 9999px, 127px, 0); }
+  50%  { clip: rect(75px, 9999px, 110px, 0); }
+  60%  { clip: rect(90px, 9999px, 40px, 0); }
+  70%  { clip: rect(22px, 9999px, 105px, 0); }
+  80%  { clip: rect(64px, 9999px, 30px, 0); }
+  90%  { clip: rect(112px, 9999px, 70px, 0); }
+  100% { clip: rect(50px, 9999px, 90px, 0); }
 }
 
 .vs-hero-sub {
@@ -139,8 +213,9 @@ body {
 }
 
 .vs-title {
+  font-family: 'Poppins', sans-serif;
   font-size: clamp(1.8rem, 3vw, 2.6rem);
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: -0.01em;
   color: #111;
   margin: 0 0 0.9rem 0;
@@ -214,7 +289,15 @@ body {
 /* ---------- Responsive ---------- */
 @media (max-width: 860px) {
   .vs-page {
-    padding: 8rem 1.5rem 24rem 1.5rem;
+    padding: 5.5rem 1.5rem 15rem 1.5rem;
+  }
+
+  .vs-hero {
+    margin-bottom: 3.5rem;
+  }
+
+  .vs-section {
+    padding: 2.5rem 0;
   }
 
   .vs-section,
@@ -237,5 +320,35 @@ body {
   .vs-section:nth-child(odd) .vs-media,
   .vs-section:nth-child(even) .vs-media {
     transform: rotate(0deg);
+  }
+}
+
+@media (max-width: 480px) {
+  .vs-page {
+    padding: 5rem 1.1rem 13rem 1.1rem;
+  }
+
+  .vs-hero-title {
+    font-size: clamp(2.4rem, 11vw, 6rem);
+  }
+
+  .vs-hero-sub {
+    font-size: 0.95rem;
+  }
+
+  .vs-index {
+    font-size: 2.4rem;
+  }
+
+  .vs-media {
+    height: 300px;
+  }
+
+  .vs-title {
+    font-size: clamp(1.5rem, 6vw, 2.6rem);
+  }
+
+  .vs-blurb {
+    font-size: 0.92rem;
   }
 }

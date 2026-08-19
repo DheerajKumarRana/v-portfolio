@@ -5,7 +5,7 @@
 }
 
 body {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Poppins', sans-serif;
   background-color: #f4f4f4;
   color: #333;
   overflow: hidden; /* Hide scrollbars completely */
@@ -56,23 +56,44 @@ body {
   line-height: 1.2;
 }
 
+/* Frosted glass icon row — echoes the nav dial's glass aesthetic instead of
+   a plain stacked text list, and reads as a designed element rather than
+   leaving the corner feeling sparse/empty */
 .top-right {
   top: 2rem;
   right: 2rem;
   display: flex;
-  flex-direction: column;
-  text-align: right;
-  gap: 0.25rem;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.6rem;
 }
 
 .top-right a {
-  text-decoration: none;
+  width: 2.4rem;
+  height: 2.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   color: inherit;
-  transition: opacity 0.3s ease;
+  text-decoration: none;
+  transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+}
+
+.top-right a svg {
+  width: 1.05rem;
+  height: 1.05rem;
+  display: block;
 }
 
 .top-right a:hover {
-  opacity: 0.6;
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.45);
+  transform: translateY(-2px);
 }
 
 .bottom-left {
@@ -95,6 +116,12 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.logo-img {
+  height: 44px;
+  width: auto;
+  display: block;
 }
 
 /* Bottom Menu */

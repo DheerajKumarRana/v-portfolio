@@ -210,11 +210,21 @@
   position: fixed;
   bottom: -420px; /* Shifted further down than a plain centered half-circle */
   left: 50%;
-  transform: translateX(-50%);
   width: 640px;
   height: 640px;
   border-radius: 50%;
   z-index: 5;
+  /* On scrolling pages (anything wrapped in .photo-bottom-bar), the dial
+     stays tucked below the fold until the cursor nears the bottom edge —
+     see dial.js's reveal-on-hover logic — so it never permanently overlaps
+     page content. Pages without that wrapper (index.html) never toggle
+     .is-dial-active, so this rule is inert there and the dial stays put. */
+  transform: translateX(-50%) translateY(260px);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.photo-page-menu.is-dial-active {
+  transform: translateX(-50%) translateY(0);
 }
 
 /* Faint flat tint across the track only — no blur, so it can never drift out
@@ -311,6 +321,7 @@
   text-align: center;
   pointer-events: auto;
   opacity: 0.55;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.95rem;
   font-weight: 500;
   letter-spacing: 0.02em;
@@ -346,6 +357,7 @@
    transform, which would make a position:fixed child track its box instead
    of the viewport. Kept as an independent sibling so it stays put regardless
    of how the ring's own size/offset is tuned. */
+/* Always visible regardless of the ring's hide/reveal-on-hover state below */
 .dial-icon {
   position: fixed;
   left: 50%;
@@ -366,8 +378,145 @@
   transform: translate(-50%, 0) scale(1);
 }
 
+/* Smoothed icon crossfade — dips to a low opacity rather than vanishing
+   completely, so swapping icons reads as a fade, not a "popup" */
+.dial-icon.is-swapping {
+  opacity: 0.15;
+}
+
 .dial-icon svg {
   width: 100%;
   height: 100%;
   display: block;
+}
+
+/* ==========================================
+   MOBILE / TABLET
+   ========================================== */
+@media (max-width: 900px) {
+  .photo-gallery-track {
+    gap: 1rem;
+    padding: 0 1.2rem;
+  }
+
+  .photo-card {
+    width: 62vw;
+    height: 68vh;
+  }
+
+  .photo-card-name {
+    font-size: 1.5rem;
+  }
+
+  .video-card-play {
+    width: 3.2rem;
+    height: 3.2rem;
+  }
+
+  .video-card .photo-card-name {
+    font-size: 1rem;
+  }
+
+  .photo-bottom-bar {
+    padding: 0 1.2rem 1.2rem 1.2rem;
+  }
+
+  .photo-bottom-bar::before {
+    height: 200px;
+  }
+
+  /* Dial scaled down to ~58% — a 640px box would overflow a phone's width
+     entirely, clipping the outermost menu items off-screen */
+  .photo-page-menu {
+    width: 370px;
+    height: 370px;
+    bottom: -240px;
+  }
+
+  .photo-page-menu .glass-ring,
+  .photo-page-menu .dial-highlight {
+    -webkit-mask: radial-gradient(circle, transparent 114px, black 121px, black 152px, transparent 158px);
+    mask: radial-gradient(circle, transparent 114px, black 121px, black 152px, transparent 158px);
+  }
+
+  .photo-page-menu .bangle {
+    width: 325px;
+    height: 325px;
+  }
+
+  .photo-page-menu .bangle-inner {
+    width: 220px;
+    height: 220px;
+  }
+
+  .photo-page-menu .menu-item {
+    top: -136px;
+    transform-origin: 0 136px;
+  }
+
+  .photo-page-menu .menu-item span {
+    font-size: 0.72rem;
+  }
+
+  .dial-icon {
+    bottom: 22px;
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .photo-card {
+    width: 74vw;
+    height: 62vh;
+  }
+
+  .corner-text {
+    font-size: 0.7rem;
+  }
+
+  .top-right {
+    gap: 0.4rem;
+  }
+
+  .top-right a {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .top-right a svg {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+
+  .logo-img {
+    height: 34px;
+  }
+}
+
+/* Very narrow phones (iPhone SE and similar) — the top-left tagline, center
+   logo, and top-right icon row are all close enough together that they risk
+   colliding at this width, so tighten further rather than let them overlap */
+@media (max-width: 360px) {
+  .top-left {
+    font-size: 0.6rem;
+  }
+
+  .logo-img {
+    height: 26px;
+  }
+
+  .top-right {
+    gap: 0.3rem;
+  }
+
+  .top-right a {
+    width: 1.7rem;
+    height: 1.7rem;
+  }
+
+  .top-right a svg {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
 }

@@ -1,6 +1,15 @@
 import { initDial } from './dial.js';
 import { SERVICES } from './servicesData.js';
 
+// Dynamically imported — vantaTopology.js pulls in p5.js + vanta, a ~340KB
+// gzipped chunk. Loading it lazily instead of as a static import means the
+// browser doesn't have to fetch/parse/execute all of that before this
+// script's actual content (the category list below) can render.
+import('./vantaTopology.js').then(({ initVantaTopology }) => {
+  // Light palette — this page is editorial/light, unlike tag.html's dark reel
+  initVantaTopology('#vanta-bg', { backgroundColor: 0xf4f4f4, color: 0xb9c9dd });
+});
+
 // ==========================================
 // RENDER
 // ==========================================

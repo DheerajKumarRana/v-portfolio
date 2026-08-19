@@ -126,6 +126,18 @@ export const SERVICES = [
   },
 ];
 
+// A gallery wall needs more than 4 frames to look like a wall — cycle each
+// category's small hand-picked pool up to a full set rather than sourcing
+// 14 unique clips/photos per category by hand.
+const SHOWCASE_COUNT = 14;
+function expand(arr, count) {
+  return Array.from({ length: count }, (_, i) => arr[i % arr.length]);
+}
+SERVICES.forEach((service) => {
+  service.videos = expand(service.videos, SHOWCASE_COUNT);
+  service.gallery = expand(service.gallery, SHOWCASE_COUNT);
+});
+
 export function findService(categoryTitle) {
   return SERVICES.find(s => s.title.toLowerCase() === String(categoryTitle).toLowerCase());
 }

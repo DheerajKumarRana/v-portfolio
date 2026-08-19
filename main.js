@@ -1,7 +1,5 @@
 import * as THREE from 'three';
-import { gsap } from 'gsap';
 import { initDial } from './dial.js';
-import { initVantaBackground } from './vantaBackground.js';
 
 // ==========================================
 // 1. THREE.JS SETUP
@@ -14,6 +12,20 @@ const scene = new THREE.Scene();
 // Camera placed at the center, optimized FOV for perfect sizing (60 degrees)
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.set(0, 0, 0);
+
+// PerspectiveCamera's fov is the VERTICAL field of view — on a narrow
+// portrait phone (aspect well under 1), a fixed 60° vertical fov leaves
+// horizontal fov much narrower than on desktop, so far fewer images are
+// visible at once and each looks oddly zoomed in. Widening the vertical fov
+// as aspect drops keeps roughly the same amount of the gallery visible;
+// desktop/landscape (aspect >= 1) is untouched.
+function updateCameraFov() {
+  const aspect = window.innerWidth / window.innerHeight;
+  camera.aspect = aspect;
+  camera.fov = aspect < 1 ? Math.min(92, 60 + (1 - aspect) * 40) : 60;
+  camera.updateProjectionMatrix();
+}
+updateCameraFov();
 
 const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
@@ -118,6 +130,7 @@ let currentRotation = 0;
 window.addEventListener('wheel', (e) => {
   // Ignore scroll if hovering over the nav dial — it has its own wheel handler
   if (e.target.closest('.photo-page-menu')) return;
+  ensureWindAudio();
   targetRotation += e.deltaY * 0.002;
 });
 
@@ -129,6 +142,7 @@ window.addEventListener('touchstart', (e) => {
   touchStartY = e.touches[0].clientY;
 });
 window.addEventListener('touchmove', (e) => {
+  ensureWindAudio();
   const touchX = e.touches[0].clientX;
   const touchY = e.touches[0].clientY;
 
@@ -147,8 +161,48 @@ window.addEventListener('touchmove', (e) => {
 });
 
 // ==========================================
+// 3b. WIND WHOOSH — the gallery images "fly" past in 3D as you spin it, so a
+// filtered-noise whoosh that swells with rotation speed sells that motion,
+// easing back to silence at rest rather than a repeated one-shot effect
+// ==========================================
+let windAudioCtx, windGain, windFilter;
+
+function ensureWindAudio() {
+  if (windAudioCtx) {
+    if (windAudioCtx.state === 'suspended') windAudioCtx.resume();
+    return;
+  }
+  windAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  const bufferSeconds = 2;
+  const bufferSize = windAudioCtx.sampleRate * bufferSeconds;
+  const buffer = windAudioCtx.createBuffer(1, bufferSize, windAudioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+  const noiseSource = windAudioCtx.createBufferSource();
+  noiseSource.buffer = buffer;
+  noiseSource.loop = true;
+
+  windFilter = windAudioCtx.createBiquadFilter();
+  windFilter.type = 'bandpass';
+  windFilter.frequency.value = 350;
+  windFilter.Q.value = 0.6;
+
+  windGain = windAudioCtx.createGain();
+  windGain.gain.value = 0;
+
+  noiseSource.connect(windFilter);
+  windFilter.connect(windGain);
+  windGain.connect(windAudioCtx.destination);
+  noiseSource.start();
+}
+
+// ==========================================
 // 4. ANIMATION LOOP & RESIZE
 // ==========================================
+
+let prevRotation = currentRotation;
 
 function animate() {
   requestAnimationFrame(animate);
@@ -157,13 +211,26 @@ function animate() {
   currentRotation += (targetRotation - currentRotation) * 0.05;
   galleryGroup.rotation.y = currentRotation;
 
+  // Wind swells with how fast the gallery is spinning, eases back to
+  // silence at rest — angular velocity is tiny (radians/frame), so scale it
+  // up to roughly the same 0-60 "speed" range the sound mapping expects
+  if (windGain) {
+    const angularVelocity = currentRotation - prevRotation;
+    prevRotation = currentRotation;
+    const speed = Math.min(Math.abs(angularVelocity) * 500, 60);
+    // sqrt curve instead of linear — boosts quiet/slow scrolling so it's
+    // still audible, without pushing fast scrolling too loud
+    const targetGain = speed > 0.3 ? Math.sqrt(speed / 60) * 0.14 : 0;
+    windGain.gain.value += (targetGain - windGain.gain.value) * 0.08;
+    windFilter.frequency.value = 300 + speed * 9;
+  }
+
   renderer.render(scene, camera);
 }
 animate();
 
 window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
+  updateCameraFov();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
@@ -175,4 +242,8 @@ initDial();
 // ==========================================
 // 6. VANTA CLOUDS BACKGROUND
 // ==========================================
-initVantaBackground('#vanta-bg');
+// Dynamically imported so the gallery/dial above can render and become
+// interactive without waiting on this decorative layer to load first
+import('./vantaBackground.js').then(({ initVantaBackground }) => {
+  initVantaBackground('#vanta-bg');
+});
