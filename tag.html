@@ -48,8 +48,12 @@
         <span class="current" id="tag-breadcrumb-current">Tag</span>
       </nav>
 
-      <!-- Full-bleed autoplaying reel behind the title -->
+      <!-- Full-bleed autoplaying reel behind the title. The clips are
+           portrait (shot for Shorts), so a blurred backdrop fills the wide
+           banner while the real video plays uncropped (object-fit: contain)
+           on top of it. -->
       <div class="tag-hero-video-wrap">
+        <div class="tag-hero-backdrop" id="tag-hero-backdrop"></div>
         <video id="tag-hero-video" class="tag-hero-video" autoplay muted loop playsinline></video>
         <div class="tag-hero-video-scrim"></div>
         <button class="tag-hero-mute is-muted" id="tag-hero-mute" aria-label="Toggle sound">

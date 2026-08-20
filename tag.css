@@ -73,14 +73,28 @@ body {
   margin-bottom: 3.5rem;
 }
 
+/* Blurred, scaled-up copy of the same clip's poster fills the banner behind
+   it — same trick Instagram/TV use for showing portrait video in a wide
+   frame without ugly black bars */
+.tag-hero-backdrop {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(40px) saturate(1.3) brightness(0.5);
+  transform: scale(1.15); /* hides the blur's soft edge at the container border */
+}
+
 .tag-hero-video {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  /* contain, not cover — these clips are portrait (shot for Shorts); cover
+     would crop most of the frame away instead of showing it uncropped */
+  object-fit: contain;
   /* Slight desaturation reads more "cinematic reel" than a raw stock clip */
-  filter: saturate(0.85) brightness(0.85);
+  filter: saturate(0.85) brightness(0.9);
 }
 
 .tag-hero-video-scrim {
@@ -353,6 +367,40 @@ body {
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
   pointer-events: none;
 }
+
+/* Per-card mute toggle — independent of hover, so you can keep listening
+   without needing to hold the cursor over the card */
+.tag-grid-mute {
+  position: absolute;
+  right: 0.7rem;
+  bottom: 0.7rem;
+  z-index: 2;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+}
+
+.tag-grid-mute:hover {
+  background: rgba(0, 0, 0, 0.6);
+  border-color: rgba(255, 255, 255, 0.75);
+  transform: scale(1.08);
+}
+
+.tag-grid-mute svg {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.tag-grid-mute.is-muted .wave-line { display: none; }
+.tag-grid-mute:not(.is-muted) .mute-line { display: none; }
 
 /* Bottom-left caption block, matching a classic portfolio-wall figcaption */
 .tag-grid-caption {

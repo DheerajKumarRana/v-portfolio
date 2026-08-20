@@ -1,28 +1,22 @@
 // Shared content for video-services.html and tag.html — single source of
 // truth so both pages describe the same 7 categories consistently.
+//
+// Corporate, Real Estate, Hospitality, Products, Fashion & Jewellery, and
+// Events use real client footage (downloaded from the agency's own YouTube
+// Shorts channel, with poster frames extracted from each clip via ffmpeg).
+// Podcast has no matching footage in that batch, so it keeps placeholder
+// sample clips.
 
-// A small pool of portraits already proven to load elsewhere in this app
-// (photo.js's gallery) — reused here as "behind the lens" filler shots so
-// every showcase grid uses only known-good image URLs.
+// Placeholder-only pool, used solely by Podcast below (see note above).
 const PORTRAITS = {
   marcus: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=700&q=80',
-  james: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=700&q=80',
   nina: 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=700&q=80',
-  ava: 'https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?w=700&q=80',
-  elle: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=700&q=80',
-  sophia: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=700&q=80',
 };
 
-// Public sample clips (Google's long-standing test-video bucket) used purely
-// as dummy placeholder footage for the tag showcase — cycled across
-// categories rather than sourced per-tag.
 const SAMPLE_VIDEOS = [
-  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
   'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
-  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4',
-  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
+  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
 ];
 
 export const SERVICES = [
@@ -30,108 +24,161 @@ export const SERVICES = [
     title: 'Corporate',
     blurb: 'Events, conferences, and product stories built for the boardroom and beyond.',
     tags: ['Event', 'Conference', 'Product Info'],
-    img: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80',
-    gallery: [
-      'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=700&q=80',
-      PORTRAITS.marcus,
-      PORTRAITS.james,
-      'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=500&q=80',
+    img: '/media/corporate/Content_Shoot_for_Levi_s_Client_Project_by_Vistaar_Media.jpg',
+    heroVideo: '/media/corporate/Content_Shoot_for_Levi_s_Client_Project_by_Vistaar_Media.mp4',
+    videos: [
+      '/media/corporate/Content_Shoot_for_Levi_s_Client_Project_by_Vistaar_Media.mp4',
+      '/media/corporate/Content_Shoot_for_MARVAC_Professional.mp4',
+      '/media/corporate/Creative_Content_by_Vistaar_Media_Client_Project.mp4',
     ],
-    heroVideo: SAMPLE_VIDEOS[1],
-    videos: [SAMPLE_VIDEOS[1], SAMPLE_VIDEOS[0], SAMPLE_VIDEOS[3], SAMPLE_VIDEOS[2]],
+    gallery: [
+      '/media/corporate/Content_Shoot_for_Levi_s_Client_Project_by_Vistaar_Media.jpg',
+      '/media/corporate/Content_Shoot_for_MARVAC_Professional.jpg',
+      '/media/corporate/Creative_Content_by_Vistaar_Media_Client_Project.jpg',
+    ],
   },
   {
     title: 'Real Estate',
     blurb: 'Spaces that sell themselves — interiors, architecture, and aerials that move buyers.',
     tags: ['Interior', 'Architecture', 'Drone', 'Walkthrough', 'Testimonial'],
-    img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-    gallery: [
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=700&q=80',
-      PORTRAITS.james,
-      PORTRAITS.nina,
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=500&q=80',
+    img: '/media/real-estate/From_Listing_to_Lifestyle_Real_Estate_Content_That_Connects_.jpg',
+    heroVideo: '/media/real-estate/From_Listing_to_Lifestyle_Real_Estate_Content_That_Connects_.mp4',
+    videos: [
+      '/media/real-estate/From_Listing_to_Lifestyle_Real_Estate_Content_That_Connects_.mp4',
+      '/media/real-estate/Interior_work_for_client_advertising_marketing_interiorvideo.mp4',
+      '/media/real-estate/Real_estate_listings_that_actually_sell_Social_media_content.mp4',
     ],
-    heroVideo: SAMPLE_VIDEOS[2],
-    videos: [SAMPLE_VIDEOS[2], SAMPLE_VIDEOS[5], SAMPLE_VIDEOS[0], SAMPLE_VIDEOS[4]],
+    gallery: [
+      '/media/real-estate/From_Listing_to_Lifestyle_Real_Estate_Content_That_Connects_.jpg',
+      '/media/real-estate/Interior_work_for_client_advertising_marketing_interiorvideo.jpg',
+      '/media/real-estate/Real_estate_listings_that_actually_sell_Social_media_content.jpg',
+    ],
   },
   {
     title: 'Hospitality',
     blurb: 'Food, festivals, and service moments shot to make people want to walk in the door.',
     tags: ['Food', 'Events', 'Services', 'Festival Campaigns'],
-    img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80',
-    gallery: [
-      'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=700&q=80',
-      PORTRAITS.ava,
-      PORTRAITS.elle,
-      'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=500&q=80',
+    img: '/media/hospitality/Aurum_Where_Seafood_Meets_the_Good_Life_Vistaar_Media.jpg',
+    heroVideo: '/media/hospitality/Aurum_Where_Seafood_Meets_the_Good_Life_Vistaar_Media.mp4',
+    videos: [
+      '/media/hospitality/Aurum_Where_Seafood_Meets_the_Good_Life_Vistaar_Media.mp4',
+      '/media/hospitality/Content_Shoot_for_21st_Amendment_Shot_Crafted_by_Vistaar_Med.mp4',
+      '/media/hospitality/Content_That_Makes_You_Crave.mp4',
+      '/media/hospitality/Edit_made_for_one_of_our_clints_instagram_page_@Runway27_blr.mp4',
+      '/media/hospitality/Evenings_at_Buffalo_Wild_Wings_Client_Project_by_Vistaar_Med.mp4',
+      '/media/hospitality/Everyone_Tried..._But_Chef_Made_It_Look_Easy..mp4',
+      '/media/hospitality/How_We_Shot_Content_for_21st_Amendment.mp4',
+      '/media/hospitality/I_Wonder_If_It_s_Warm_In_There....mp4',
+      '/media/hospitality/Inside_Runway27_s_Kitchen_Real_Behind_The_Scenes.mp4',
+      '/media/hospitality/Inside_The_Aurum_Premium_Brand_Shoot_by_Vistaar_Media.mp4',
+      '/media/hospitality/Messy_Bar._Clean_Content..mp4',
+      '/media/hospitality/POV_-_The_Chef_Just_Activated_Your_Hunger_Switch.mp4',
+      '/media/hospitality/Restaurant_Showcase_Video_by_Vistaar_Media_foodphotography_r.mp4',
+      '/media/hospitality/The_Yard_Framed_Differently_A_Vistaar_Media_Project.mp4',
+      '/media/hospitality/Thirsty_Your_Perfect_Drink_Awaits_at_Runway27.mp4',
+      '/media/hospitality/Turning_the_Runway27_Experience_into_Scroll-Stopping_Content.mp4',
+      '/media/hospitality/Waffles_Made_to_Look_Irresistible_Food_Content_by_Vistaar_Me.mp4',
+      '/media/hospitality/When_Last_Order_Isn_t_the_Last.mp4',
+      '/media/hospitality/Where_Food_Meets_Vibes.mp4',
+      '/media/hospitality/Xochi_Bar_Kitchen_A_New_Creative_Cut_by_Vistaar_Media.mp4',
     ],
-    heroVideo: SAMPLE_VIDEOS[3],
-    videos: [SAMPLE_VIDEOS[3], SAMPLE_VIDEOS[1], SAMPLE_VIDEOS[5], SAMPLE_VIDEOS[0]],
+    gallery: [
+      '/media/hospitality/Aurum_Where_Seafood_Meets_the_Good_Life_Vistaar_Media.jpg',
+      '/media/hospitality/Content_Shoot_for_21st_Amendment_Shot_Crafted_by_Vistaar_Med.jpg',
+      '/media/hospitality/Content_That_Makes_You_Crave.jpg',
+      '/media/hospitality/Edit_made_for_one_of_our_clints_instagram_page_@Runway27_blr.jpg',
+      '/media/hospitality/Evenings_at_Buffalo_Wild_Wings_Client_Project_by_Vistaar_Med.jpg',
+      '/media/hospitality/Everyone_Tried..._But_Chef_Made_It_Look_Easy..jpg',
+      '/media/hospitality/How_We_Shot_Content_for_21st_Amendment.jpg',
+      '/media/hospitality/I_Wonder_If_It_s_Warm_In_There....jpg',
+      '/media/hospitality/Inside_Runway27_s_Kitchen_Real_Behind_The_Scenes.jpg',
+      '/media/hospitality/Inside_The_Aurum_Premium_Brand_Shoot_by_Vistaar_Media.jpg',
+      '/media/hospitality/Messy_Bar._Clean_Content..jpg',
+      '/media/hospitality/POV_-_The_Chef_Just_Activated_Your_Hunger_Switch.jpg',
+      '/media/hospitality/Restaurant_Showcase_Video_by_Vistaar_Media_foodphotography_r.jpg',
+      '/media/hospitality/The_Yard_Framed_Differently_A_Vistaar_Media_Project.jpg',
+      '/media/hospitality/Thirsty_Your_Perfect_Drink_Awaits_at_Runway27.jpg',
+      '/media/hospitality/Turning_the_Runway27_Experience_into_Scroll-Stopping_Content.jpg',
+      '/media/hospitality/Waffles_Made_to_Look_Irresistible_Food_Content_by_Vistaar_Me.jpg',
+      '/media/hospitality/When_Last_Order_Isn_t_the_Last.jpg',
+      '/media/hospitality/Where_Food_Meets_Vibes.jpg',
+      '/media/hospitality/Xochi_Bar_Kitchen_A_New_Creative_Cut_by_Vistaar_Media.jpg',
+    ],
   },
   {
     title: 'Products',
     blurb: 'From shelf to screen — D2C, FMCG, industrial, and medical, shot to convert.',
     tags: ['D2C', 'FMCG', 'Industrial', 'Medical & Others'],
-    img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80',
-    gallery: [
-      'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=700&q=80',
-      PORTRAITS.nina,
-      PORTRAITS.marcus,
-      'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80',
+    img: '/media/products/A_Fresh_Take_on_Tea_Royal_Virasat_Natural_Tea_x_Vistaar_Medi.jpg',
+    heroVideo: '/media/products/A_Fresh_Take_on_Tea_Royal_Virasat_Natural_Tea_x_Vistaar_Medi.mp4',
+    videos: [
+      '/media/products/A_Fresh_Take_on_Tea_Royal_Virasat_Natural_Tea_x_Vistaar_Medi.mp4',
+      '/media/products/Behind_the_Camera_-_Vespa_BTS_Shoot_Vistaar_Media.mp4',
+      '/media/products/More_Than_Just_Dry_Fruits.mp4',
+      '/media/products/One_Visit_Is_Never_Enough_Manak_Mewa.mp4',
+      '/media/products/Real_Juice_Real_Refreshment_A_Vistaar_Media_Project.mp4',
+      '/media/products/This_Snack_Is_Hard_to_Put_Down_Manak_Mewa_Feature.mp4',
+      '/media/products/Vistaar_Networks_-_Your_Premier_Destination_for_Digital_Lear.mp4',
     ],
-    heroVideo: SAMPLE_VIDEOS[0],
-    videos: [SAMPLE_VIDEOS[0], SAMPLE_VIDEOS[4], SAMPLE_VIDEOS[2], SAMPLE_VIDEOS[3]],
+    gallery: [
+      '/media/products/A_Fresh_Take_on_Tea_Royal_Virasat_Natural_Tea_x_Vistaar_Medi.jpg',
+      '/media/products/Behind_the_Camera_-_Vespa_BTS_Shoot_Vistaar_Media.jpg',
+      '/media/products/More_Than_Just_Dry_Fruits.jpg',
+      '/media/products/One_Visit_Is_Never_Enough_Manak_Mewa.jpg',
+      '/media/products/Real_Juice_Real_Refreshment_A_Vistaar_Media_Project.jpg',
+      '/media/products/This_Snack_Is_Hard_to_Put_Down_Manak_Mewa_Feature.jpg',
+      '/media/products/Vistaar_Networks_-_Your_Premier_Destination_for_Digital_Lear.jpg',
+    ],
   },
   {
     title: 'Fashion & Jewellery',
     blurb: 'Every facet catches light — close-ups, ASMR, on-model, and AI-assisted product sets.',
     tags: ['Close-up Shots', 'ASMR', 'With Model', 'AI', 'Product Photos', 'Listing Photos', 'Banners'],
-    img: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=800&q=80',
-    gallery: [
-      'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=700&q=80',
-      PORTRAITS.sophia,
-      PORTRAITS.elle,
-      'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&q=80',
+    img: '/media/fashion-jewellery/Jewelry_That_Deserves_the_Spotlight.jpg',
+    heroVideo: '/media/fashion-jewellery/Jewelry_That_Deserves_the_Spotlight.mp4',
+    videos: [
+      '/media/fashion-jewellery/Jewelry_That_Deserves_the_Spotlight.mp4',
+      '/media/fashion-jewellery/Velvet_Sheen_Reimagined_on_Screen_Vistaar_Media.mp4',
     ],
-    heroVideo: SAMPLE_VIDEOS[5],
-    videos: [SAMPLE_VIDEOS[5], SAMPLE_VIDEOS[3], SAMPLE_VIDEOS[1], SAMPLE_VIDEOS[2]],
+    gallery: [
+      '/media/fashion-jewellery/Jewelry_That_Deserves_the_Spotlight.jpg',
+      '/media/fashion-jewellery/Velvet_Sheen_Reimagined_on_Screen_Vistaar_Media.jpg',
+    ],
   },
   {
     title: 'Events',
     blurb: 'Corporate, social, birthdays, sport — every occasion, covered start to finish.',
     tags: ['Corporate Event', 'Social Event', 'Birthday Parties', 'Sports Event'],
-    img: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80',
-    gallery: [
-      'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=700&q=80',
-      PORTRAITS.ava,
-      PORTRAITS.sophia,
-      'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&q=80',
+    img: '/media/events/Capture_Your_Special_Moments_Vistaar_Media.jpg',
+    heroVideo: '/media/events/Capture_Your_Special_Moments_Vistaar_Media.mp4',
+    videos: [
+      '/media/events/Capture_Your_Special_Moments_Vistaar_Media.mp4',
     ],
-    heroVideo: SAMPLE_VIDEOS[4],
-    videos: [SAMPLE_VIDEOS[4], SAMPLE_VIDEOS[0], SAMPLE_VIDEOS[3], SAMPLE_VIDEOS[5]],
+    gallery: [
+      '/media/events/Capture_Your_Special_Moments_Vistaar_Media.jpg',
+    ],
   },
   {
+    // No matching footage in the downloaded batch — kept as placeholder
+    // sample content until real podcast/talking-head clips are available.
     title: 'Podcast',
     blurb: 'Conversations that carry — talking heads, walk-and-talks, and lessons that land.',
     tags: ['Talking Head Videos', 'Podcast', 'Walking & Talking Shots', 'Testimonial', 'Educational'],
-    img: 'https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=800&q=80',
-    gallery: [
-      'https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=700&q=80',
-      PORTRAITS.marcus,
-      PORTRAITS.nina,
-      'https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=500&q=80',
-    ],
-    heroVideo: SAMPLE_VIDEOS[3],
-    videos: [SAMPLE_VIDEOS[3], SAMPLE_VIDEOS[2], SAMPLE_VIDEOS[1], SAMPLE_VIDEOS[0]],
+    img: PORTRAITS.marcus,
+    heroVideo: SAMPLE_VIDEOS[0],
+    videos: [SAMPLE_VIDEOS[0], SAMPLE_VIDEOS[1], SAMPLE_VIDEOS[2]],
+    gallery: [PORTRAITS.marcus, PORTRAITS.nina, PORTRAITS.marcus],
   },
 ];
 
-// A gallery wall needs more than 4 frames to look like a wall — cycle each
-// category's small hand-picked pool up to a full set rather than sourcing
-// 14 unique clips/photos per category by hand.
+// A gallery wall needs more than a handful of frames to look like a wall —
+// cycle each category's pool up to a full set. Categories with MORE real
+// clips than the target (e.g. Hospitality's 20) keep every one of them
+// rather than being truncated down to the target.
 const SHOWCASE_COUNT = 14;
 function expand(arr, count) {
-  return Array.from({ length: count }, (_, i) => arr[i % arr.length]);
+  const target = Math.max(arr.length, count);
+  return Array.from({ length: target }, (_, i) => arr[i % arr.length]);
 }
 SERVICES.forEach((service) => {
   service.videos = expand(service.videos, SHOWCASE_COUNT);

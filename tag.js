@@ -26,6 +26,7 @@ document.title = `${tagName} | ${service.title} | 213 MEECH`;
 const heroVideo = document.getElementById('tag-hero-video');
 heroVideo.src = service.heroVideo;
 heroVideo.poster = service.gallery[0];
+document.getElementById('tag-hero-backdrop').style.backgroundImage = `url(${service.gallery[0]})`;
 
 document.getElementById('tag-hero-eyebrow').textContent = `${service.title} — Video Showcase`;
 const heroTitleEl = document.getElementById('tag-hero-title');
@@ -43,12 +44,22 @@ muteToggle.addEventListener('click', () => {
 });
 
 // ==========================================
-// SHOWCASE WALL — real looping clips in a float-column layout. Positioning
-// is plain CSS (see .tag-grid-item's nth-child rules in tag.css) — no JS
-// math needed; that's the actual technique the reference site uses too.
+// SHOWCASE WALL — real clips in a float-column layout. Positioning is plain
+// CSS (see .tag-grid-item's nth-child rules in tag.css) — no JS math
+// needed; that's the actual technique the reference site uses too.
+//
+// Each card is paused/muted at rest — it plays on hover and pauses again
+// when you leave, with its own mute/unmute button independent of hover so
+// you can choose to keep listening without needing to hold the cursor there.
 // ==========================================
 const grid = document.getElementById('tag-grid');
-let activeVideo = null;
+const canHoverGrid = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+const MUTE_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M4 9.5v5h3.5L12 18V6L7.5 9.5H4Z"/>
+  <path class="mute-line" d="M17 8.5 21 15.5M21 8.5 17 15.5"/>
+  <path class="wave-line" d="M16 9.2a4 4 0 0 1 0 5.6M18.5 7a7.5 7.5 0 0 1 0 10"/>
+</svg>`;
 
 service.videos.forEach((src, i) => {
   const item = document.createElement('div');
@@ -57,10 +68,11 @@ service.videos.forEach((src, i) => {
   const timecode = `00:${String(seconds).padStart(2, '0')}`;
   item.innerHTML = `
     <div class="tag-grid-tilt">
-      <video src="${src}" poster="${service.gallery[i % service.gallery.length]}" muted loop playsinline autoplay preload="metadata"></video>
+      <video data-src="${src}" poster="${service.gallery[i % service.gallery.length]}" muted loop playsinline preload="none"></video>
       <div class="tag-grid-overlay"></div>
       <div class="tag-grid-rec"><span class="tag-grid-dot"></span>REEL</div>
       <div class="tag-grid-timecode">${timecode}</div>
+      <button class="tag-grid-mute is-muted" aria-label="Toggle sound">${MUTE_ICON}</button>
       <figcaption class="tag-grid-caption">
         <h3>${tagName} — ${String(i + 1).padStart(2, '0')}</h3>
         <small>${service.title}</small>
@@ -69,15 +81,47 @@ service.videos.forEach((src, i) => {
   `;
 
   const video = item.querySelector('video');
-  item.addEventListener('mouseenter', () => {
-    if (activeVideo && activeVideo !== video) activeVideo.muted = true;
-    video.muted = false;
-    activeVideo = video;
+  const muteBtn = item.querySelector('.tag-grid-mute');
+
+  // No src attribute at all until the moment it's actually needed — with 20
+  // clips in a single category, giving every <video> a src up front means
+  // 20 simultaneous metadata fetches on page load. The poster (already a
+  // separate lightweight image request) covers the resting-state look.
+  function loadVideoSrc() {
+    if (!video.src) video.src = video.dataset.src;
+  }
+
+  muteBtn.addEventListener('click', (e) => {
+    e.stopPropagation(); // don't let the click also register as a tilt/hover interaction
+    video.muted = !video.muted;
+    muteBtn.classList.toggle('is-muted', video.muted);
   });
-  item.addEventListener('mouseleave', () => {
-    video.muted = true;
-    if (activeVideo === video) activeVideo = null;
-  });
+
+  if (canHoverGrid) {
+    item.addEventListener('mouseenter', () => {
+      loadVideoSrc();
+      video.currentTime = 0;
+      video.play().catch(() => {});
+    });
+    item.addEventListener('mouseleave', () => {
+      video.pause();
+    });
+  } else {
+    // No hover on touch — fall back to autoplay-when-visible like before,
+    // so the wall still feels alive instead of a grid of frozen posters.
+    // Still lazy: only loads the src once it's actually about to be seen.
+    const playObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          loadVideoSrc();
+          video.play().catch(() => {});
+        } else {
+          video.pause();
+        }
+      });
+    }, { threshold: 0.6 });
+    playObserver.observe(item);
+  }
 
   grid.appendChild(item);
 });
