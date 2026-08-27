@@ -9,17 +9,6 @@ body {
   background-color: #0d0d0e;
 }
 
-/* Vanta.js topology backdrop — fixed behind everything else on the page */
-#vanta-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 0;
-  pointer-events: none;
-}
-
 /* Top chrome (logo/corner text) was tuned for a light page — flip to light
    text now that this page is dark throughout */
 .corner-text {
@@ -32,7 +21,7 @@ body {
   z-index: 2;
   max-width: 1600px;
   margin: 0 auto;
-  padding: 6rem 2rem 26rem 2rem;
+  padding: 6rem 2rem 1rem 2rem;
 }
 
 .tag-breadcrumb {
@@ -44,7 +33,8 @@ body {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.45);
-  margin-bottom: 1.4rem;
+  margin-bottom: 0.9rem;
+  pointer-events: auto;
 }
 
 .tag-breadcrumb a {
@@ -61,428 +51,39 @@ body {
   color: #fff;
 }
 
-/* ---------- Hero reel — full-bleed autoplaying video behind the title ---------- */
-.tag-hero-video-wrap {
-  position: relative;
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
-  height: 62vh;
-  min-height: 420px;
-  overflow: hidden;
-  background: #111;
-  margin-bottom: 3.5rem;
+.tag-title {
+  margin: 0 0 0.4rem 0;
+  font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+  font-weight: 700;
+  color: #fff;
 }
 
-/* Blurred, scaled-up copy of the same clip's poster fills the banner behind
-   it — same trick Instagram/TV use for showing portrait video in a wide
-   frame without ugly black bars */
-.tag-hero-backdrop {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  filter: blur(40px) saturate(1.3) brightness(0.5);
-  transform: scale(1.15); /* hides the blur's soft edge at the container border */
+.tag-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
 }
 
-.tag-hero-video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  /* contain, not cover — these clips are portrait (shot for Shorts); cover
-     would crop most of the frame away instead of showing it uncropped */
-  object-fit: contain;
-  /* Slight desaturation reads more "cinematic reel" than a raw stock clip */
-  filter: saturate(0.85) brightness(0.9);
-}
-
-.tag-hero-video-scrim {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(0deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.15) 45%, rgba(0, 0, 0, 0.35) 100%);
-  pointer-events: none;
-}
-
-/* Cinematic film-grain texture over the reel */
-.tag-hero-video-wrap::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.5;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
-}
-
-.tag-hero-video-content {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 0 2rem 3rem 2rem;
+/* The dial floats fixed at the bottom of the viewport regardless of
+   scroll — this reserves room below the carousel so it never overlaps it. */
+.coverflow-section {
   max-width: 1600px;
   margin: 0 auto;
-  z-index: 1;
-}
-
-.tag-hero-eyebrow {
-  display: block;
-  font-size: 0.85rem;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  color: rgba(255, 255, 255, 0.75);
-  margin-bottom: 0.8rem;
-}
-
-/* RGB-split "glitch" title — same technique as the reference's
-   <h2 data-text="..."> treatment: two pseudo-elements duplicate the text via
-   attr(data-text), tinted red/blue and offset a couple px, each animated
-   with a clip-rect keyframe that flickers different horizontal bands */
-.tag-hero-title {
-  position: relative;
-  font-family: 'Poppins', sans-serif;
-  font-size: clamp(3.8rem, 11vw, 7.5rem);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1;
-  color: #fff;
-  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
-  margin: 0;
-}
-
-.tag-hero-title::before,
-.tag-hero-title::after {
-  content: attr(data-text);
-  position: absolute;
-  top: 0;
-  width: 100%;
-  color: #fff;
-  overflow: hidden;
-}
-
-.tag-hero-title::before {
-  left: -2px;
-  text-shadow: 1px 0 blue;
-  clip: rect(0, 9999px, 0, 0);
-  animation: tag-title-glitch-2 3s infinite linear alternate-reverse;
-}
-
-.tag-hero-title::after {
-  left: 2px;
-  text-shadow: -1px 0 red;
-  clip: rect(0, 9999px, 0, 0);
-  animation: tag-title-glitch-1 2s infinite linear alternate-reverse;
-}
-
-@keyframes tag-title-glitch-1 {
-  0%   { clip: rect(18px, 9999px, 16px, 0); }
-  10%  { clip: rect(48px, 9999px, 117px, 0); }
-  20%  { clip: rect(46px, 9999px, 53px, 0); }
-  30%  { clip: rect(76px, 9999px, 129px, 0); }
-  40%  { clip: rect(100px, 9999px, 80px, 0); }
-  50%  { clip: rect(78px, 9999px, 79px, 0); }
-  60%  { clip: rect(83px, 9999px, 108px, 0); }
-  70%  { clip: rect(79px, 9999px, 68px, 0); }
-  80%  { clip: rect(76px, 9999px, 78px, 0); }
-  90%  { clip: rect(28px, 9999px, 118px, 0); }
-  100% { clip: rect(103px, 9999px, 15px, 0); }
-}
-
-@keyframes tag-title-glitch-2 {
-  0%   { clip: rect(80px, 9999px, 50px, 0); }
-  10%  { clip: rect(8px, 9999px, 80px, 0); }
-  20%  { clip: rect(56px, 9999px, 95px, 0); }
-  30%  { clip: rect(37px, 9999px, 75px, 0); }
-  40%  { clip: rect(128px, 9999px, 127px, 0); }
-  50%  { clip: rect(75px, 9999px, 110px, 0); }
-  60%  { clip: rect(90px, 9999px, 40px, 0); }
-  70%  { clip: rect(22px, 9999px, 105px, 0); }
-  80%  { clip: rect(64px, 9999px, 30px, 0); }
-  90%  { clip: rect(112px, 9999px, 70px, 0); }
-  100% { clip: rect(50px, 9999px, 90px, 0); }
-}
-
-.tag-hero-mute {
-  position: absolute;
-  top: 1.6rem;
-  right: 1.6rem;
-  z-index: 2;
-  width: 2.6rem;
-  height: 2.6rem;
-  border-radius: 50%;
-  border: 1.5px solid rgba(255, 255, 255, 0.5);
-  background: rgba(0, 0, 0, 0.25);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background 0.25s ease, border-color 0.25s ease;
-}
-
-.tag-hero-mute:hover {
-  background: rgba(0, 0, 0, 0.45);
-  border-color: rgba(255, 255, 255, 0.85);
-}
-
-.tag-hero-mute svg {
-  width: 1.3rem;
-  height: 1.3rem;
-}
-
-.tag-hero-mute.is-muted .wave-line { display: none; }
-.tag-hero-mute:not(.is-muted) .mute-line { display: none; }
-
-.tag-hero-blurb {
-  max-width: 34rem;
-  font-size: 1.02rem;
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.6);
-  line-height: 1.65;
-  margin-bottom: 4rem;
-}
-
-/* ---------- Showcase wall — plain float columns + nth-child stagger ----------
-   This is the actual technique the reference site uses: a simple
-   percentage-width float grid, gutters via padding, and every column given
-   its own fixed vertical offset via :nth-child. No per-item JS positioning. */
-.tag-grid {
-  width: 100%;
-}
-
-.tag-grid::after {
-  content: '';
-  display: table;
-  clear: both;
-}
-
-.tag-grid-item {
-  position: relative;
-  float: left;
-  width: 25%;
-  box-sizing: border-box;
-  padding: 0 0.9rem;
-  margin-bottom: 2.5rem;
-  aspect-ratio: 1 / 1;
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
-
-.tag-grid-item.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Each of the 4 columns gets its own consistent vertical offset — the
-   "scattered" look is just this, repeated down the page */
-.tag-grid-item:nth-child(4n+1) { margin-top: 0; }
-.tag-grid-item:nth-child(4n+2) { margin-top: 3.2rem; }
-.tag-grid-item:nth-child(4n+3) { margin-top: 1.2rem; }
-.tag-grid-item:nth-child(4n+4) { margin-top: 4.2rem; }
-
-/* The actual tilting surface — kept separate from .tag-grid-item so the
-   scroll-reveal transform (translateY) and the magnetic-tilt transform
-   (set inline by JS on mousemove) never fight over the same property */
-.tag-grid-tilt {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: #141414;
-  box-shadow:
-    0 2px 4px rgba(0, 0, 0, 0.5),
-    0 20px 45px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(255, 255, 255, 0.03) inset;
-  cursor: pointer;
-  transform-style: preserve-3d;
-  transition: box-shadow 0.3s ease;
-}
-
-.tag-grid-item:hover .tag-grid-tilt {
-  box-shadow:
-    0 6px 10px rgba(0, 0, 0, 0.55),
-    0 32px 64px rgba(0, 0, 0, 0.7),
-    0 0 0 1px rgba(255, 255, 255, 0.06) inset;
-}
-
-.tag-grid-item video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  filter: saturate(0.95) brightness(0.94);
-}
-
-.tag-grid-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.05) 30%, rgba(0, 0, 0, 0.75) 100%);
-  pointer-events: none;
-}
-
-/* Pulsing "REEL" indicator — reinforces that this is playing footage, not a photo */
-.tag-grid-rec {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  color: #fff;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
-  pointer-events: none;
-}
-
-.tag-grid-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #ff4d4d;
-  box-shadow: 0 0 6px rgba(255, 77, 77, 0.8);
-  animation: tag-pulse 1.6s ease-in-out infinite;
-}
-
-@keyframes tag-pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.8); }
-}
-
-.tag-grid-timecode {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  font-size: 0.65rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  font-variant-numeric: tabular-nums;
-  color: rgba(255, 255, 255, 0.8);
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
-  pointer-events: none;
-}
-
-/* Per-card mute toggle — independent of hover, so you can keep listening
-   without needing to hold the cursor over the card */
-.tag-grid-mute {
-  position: absolute;
-  right: 0.7rem;
-  bottom: 0.7rem;
-  z-index: 2;
-  width: 1.9rem;
-  height: 1.9rem;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  background: rgba(0, 0, 0, 0.4);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
-}
-
-.tag-grid-mute:hover {
-  background: rgba(0, 0, 0, 0.6);
-  border-color: rgba(255, 255, 255, 0.75);
-  transform: scale(1.08);
-}
-
-.tag-grid-mute svg {
-  width: 0.9rem;
-  height: 0.9rem;
-}
-
-.tag-grid-mute.is-muted .wave-line { display: none; }
-.tag-grid-mute:not(.is-muted) .mute-line { display: none; }
-
-/* Bottom-left caption block, matching a classic portfolio-wall figcaption */
-.tag-grid-caption {
-  position: absolute;
-  left: 1.1rem;
-  right: 1.1rem;
-  bottom: 1rem;
-  pointer-events: none;
-}
-
-.tag-grid-caption h3 {
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: #fff;
-  letter-spacing: -0.01em;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
-  margin: 0 0 0.2rem 0;
-}
-
-.tag-grid-caption small {
-  display: block;
-  font-size: 0.75rem;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.7);
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  padding: 0 2rem 26rem 2rem;
 }
 
 @media (max-width: 900px) {
   .tag-page {
-    padding: 5.5rem 1.5rem 16rem 1.5rem;
+    padding: 5.5rem 1.5rem 1rem 1.5rem;
   }
 
-  .tag-hero-title {
-    font-size: clamp(2.4rem, 8vw, 7.5rem);
-  }
-
-  .tag-hero-video-wrap {
-    height: 50vh;
-    min-height: 320px;
-  }
-
-  .tag-grid-item {
-    width: 50%;
-    margin-top: 0;
-  }
-
-  .tag-grid-item:nth-child(2n+2) {
-    margin-top: 3rem;
+  .coverflow-section {
+    padding: 0 1.2rem 16rem 1.2rem;
   }
 }
 
 @media (max-width: 700px) {
   .tag-page {
-    padding: 5rem 1.2rem 15rem 1.2rem;
-  }
-
-  .tag-hero-video-content {
-    padding: 0 1.2rem 1.6rem 1.2rem;
-  }
-
-  .tag-hero-title {
-    font-size: clamp(1.9rem, 9vw, 7.5rem);
-  }
-
-  .tag-hero-blurb {
-    font-size: 0.92rem;
-    margin-bottom: 2.5rem;
-  }
-
-  .tag-grid-item {
-    width: 100%;
-    margin-top: 0 !important;
-  }
-}
-
-@media (max-width: 420px) {
-  .tag-hero-title {
-    font-size: clamp(1.6rem, 9.5vw, 7.5rem);
-  }
-
-  .tag-hero-video-wrap {
-    height: 42vh;
-    min-height: 260px;
+    padding: 5rem 1.2rem 0.8rem 1.2rem;
   }
 }

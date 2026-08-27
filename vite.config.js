@@ -10,7 +10,7 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         photo: resolve(__dirname, 'photo.html'),
-        videoServices: resolve(__dirname, 'video-services.html'),
+        services: resolve(__dirname, 'services.html'),
         tag: resolve(__dirname, 'tag.html'),
       },
     },

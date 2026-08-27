@@ -10,6 +10,10 @@ body {
   color: #333;
   overflow: hidden; /* Hide scrollbars completely */
   height: 100vh;
+  /* On mobile, 100vh includes the space the browser's address bar can hide
+     behind — dvh tracks the actual visible viewport instead. Unsupported
+     browsers just ignore this line and keep the 100vh above. */
+  height: 100dvh;
   margin: 0;
 }
 
@@ -25,6 +29,7 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   z-index: 0;
   pointer-events: none;
 }
@@ -36,6 +41,7 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   z-index: 1; /* Below UI elements */
   pointer-events: none; /* Let clicks pass through if needed, though menu is z-indexed higher */
 }

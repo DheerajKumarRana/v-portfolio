@@ -4,18 +4,16 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Video Services | 213 MEECH</title>
+    <title>Services | 213 MEECH</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="./photo.css">
-    <link rel="stylesheet" href="./video-services.css">
+    <link rel="stylesheet" href="./services.css">
+    <link rel="stylesheet" href="./frameGrid.css">
   </head>
   <body>
-    <!-- Vanta.js topology backdrop — behind all page content -->
-    <div id="vanta-bg"></div>
-
     <!-- Top Left Corner Text -->
     <div class="corner-text top-left">
       <span>IT'S MEECH'S</span><br>
@@ -37,20 +35,16 @@
       <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="3.8"/><circle cx="17.2" cy="6.8" r="1"/></svg></a>
     </div>
 
-    <!-- Editorial content -->
+    <!-- Hover-expand video mosaic — one tile per category, playing a real
+         clip on hover; click opens that category's full showcase. The only
+         content on this page. -->
     <main class="vs-page">
-      <section class="vs-hero">
-        <span class="vs-hero-eyebrow">213 MEECH — SERVICES</span>
-        <h1 class="vs-hero-title">
-          <span class="glitch-word" data-text="Video">Video</span>
-          <em class="glitch-word" data-text="Production">Production</em>
-        </h1>
-        <p class="vs-hero-sub">Seven kinds of stories, one crew behind the lens. Scroll to see what we shoot.</p>
+      <section class="frame-grid-section">
+        <span class="frame-grid-eyebrow">213 MEECH — SERVICES — Hover a tile · Click to explore</span>
+        <div class="frame-grid" id="frame-grid">
+          <!-- cells injected by services.js -->
+        </div>
       </section>
-
-      <div class="vs-list" id="vs-list">
-        <!-- sections injected by video-services.js -->
-      </div>
     </main>
 
     <!-- Bottom bar with shared nav dial -->
@@ -68,8 +62,8 @@
           <div class="menu-items" id="rainbow-menu">
             <a href="./index.html" class="menu-item" data-index="0"><span>HOME</span></a>
             <a href="#" class="menu-item" data-index="1"><span>ABOUT US</span></a>
-            <a href="#" class="menu-item" data-index="2"><span>PORTFOLIO</span></a>
-            <a href="./photo.html" class="menu-item active" data-index="3"><span>SERVICES</span></a>
+            <a href="./services.html" class="menu-item active" data-index="2"><span>SERVICES</span></a>
+            <a href="./photo.html" class="menu-item" data-index="3"><span>PORTFOLIO</span></a>
             <a href="#" class="menu-item" data-index="4"><span>SUBSCRIPTION</span></a>
             <a href="#" class="menu-item" data-index="5"><span>BOOK</span></a>
           </div>
@@ -82,6 +76,6 @@
       </div>
     </div>
 
-    <script type="module" src="/video-services.js"></script>
+    <script type="module" src="/services.js"></script>
   </body>
 </html>

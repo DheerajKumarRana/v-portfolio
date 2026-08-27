@@ -10,19 +10,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="./photo.css">
-    <link rel="stylesheet" href="./video-services.css">
     <link rel="stylesheet" href="./tag.css">
+    <link rel="stylesheet" href="./coverflowCarousel.css">
+    <link rel="stylesheet" href="./stellarGallery.css">
   </head>
   <body>
-    <!-- Vanta.js topology backdrop — behind all page content -->
-    <div id="vanta-bg"></div>
-
-    <!-- Top Left Corner Text -->
-    <div class="corner-text top-left">
-      <span>IT'S MEECH'S</span><br>
-      <span>TIME</span>
-    </div>
-
     <!-- Top Center Logo -->
     <div class="logo">
       <a href="./index.html">
@@ -41,40 +33,26 @@
     <!-- Content -->
     <main class="tag-page">
       <nav class="tag-breadcrumb">
-        <a href="./video-services.html">Services</a>
+        <a href="./services.html" id="tag-breadcrumb-root">Services</a>
         <span>/</span>
-        <a href="./video-services.html" id="tag-breadcrumb-category">Category</a>
+        <a href="./services.html" id="tag-breadcrumb-category">Category</a>
         <span>/</span>
         <span class="current" id="tag-breadcrumb-current">Tag</span>
       </nav>
-
-      <!-- Full-bleed autoplaying reel behind the title. The clips are
-           portrait (shot for Shorts), so a blurred backdrop fills the wide
-           banner while the real video plays uncropped (object-fit: contain)
-           on top of it. -->
-      <div class="tag-hero-video-wrap">
-        <div class="tag-hero-backdrop" id="tag-hero-backdrop"></div>
-        <video id="tag-hero-video" class="tag-hero-video" autoplay muted loop playsinline></video>
-        <div class="tag-hero-video-scrim"></div>
-        <button class="tag-hero-mute is-muted" id="tag-hero-mute" aria-label="Toggle sound">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 9.5v5h3.5L12 18V6L7.5 9.5H4Z"/>
-            <path class="mute-line" d="M17 8.5 21 15.5M21 8.5 17 15.5"/>
-            <path class="wave-line" d="M16 9.2a4 4 0 0 1 0 5.6M18.5 7a7.5 7.5 0 0 1 0 10"/>
-          </svg>
-        </button>
-        <div class="tag-hero-video-content">
-          <span class="tag-hero-eyebrow" id="tag-hero-eyebrow">Category — Video Showcase</span>
-          <h1 class="tag-hero-title" id="tag-hero-title">Tag</h1>
-        </div>
-      </div>
-
-      <p class="tag-hero-blurb" id="tag-hero-blurb"></p>
-
-      <div class="tag-grid" id="tag-grid">
-        <!-- showcase items injected by tag.js -->
-      </div>
+      <h1 class="tag-title" id="tag-title">Video Showcase</h1>
+      <p class="tag-hint" id="tag-hint">Click a card to play</p>
     </main>
+
+    <!-- Two presentations for the same category reel, only one shown at a
+         time (see tag.js): the Services flow gets a 3D drag carousel, the
+         Portfolio flow gets the Fibonacci-sphere 3D gallery. -->
+    <section class="coverflow-section" id="coverflow-section" hidden>
+      <div class="coverflow" id="coverflow"></div>
+    </section>
+
+    <section class="stellar-gallery-section" id="stellar-gallery-section" hidden>
+      <div class="stellar-gallery" id="stellar-gallery"></div>
+    </section>
 
     <!-- Bottom bar with shared nav dial -->
     <div class="photo-bottom-bar">
@@ -91,8 +69,8 @@
           <div class="menu-items" id="rainbow-menu">
             <a href="./index.html" class="menu-item" data-index="0"><span>HOME</span></a>
             <a href="#" class="menu-item" data-index="1"><span>ABOUT US</span></a>
-            <a href="#" class="menu-item" data-index="2"><span>PORTFOLIO</span></a>
-            <a href="./photo.html" class="menu-item active" data-index="3"><span>SERVICES</span></a>
+            <a href="./services.html" class="menu-item" data-index="2" id="tag-menu-services"><span>SERVICES</span></a>
+            <a href="./photo.html" class="menu-item" data-index="3" id="tag-menu-portfolio"><span>PORTFOLIO</span></a>
             <a href="#" class="menu-item" data-index="4"><span>SUBSCRIPTION</span></a>
             <a href="#" class="menu-item" data-index="5"><span>BOOK</span></a>
           </div>

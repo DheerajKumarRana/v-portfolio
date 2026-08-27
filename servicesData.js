@@ -1,4 +1,4 @@
-// Shared content for video-services.html and tag.html — single source of
+// Shared content for services.html and tag.html — single source of
 // truth so both pages describe the same 7 categories consistently.
 //
 // Corporate, Real Estate, Hospitality, Products, Fashion & Jewellery, and
@@ -171,19 +171,12 @@ export const SERVICES = [
   },
 ];
 
-// A gallery wall needs more than a handful of frames to look like a wall —
-// cycle each category's pool up to a full set. Categories with MORE real
-// clips than the target (e.g. Hospitality's 20) keep every one of them
-// rather than being truncated down to the target.
-const SHOWCASE_COUNT = 14;
-function expand(arr, count) {
-  const target = Math.max(arr.length, count);
-  return Array.from({ length: target }, (_, i) => arr[i % arr.length]);
-}
-SERVICES.forEach((service) => {
-  service.videos = expand(service.videos, SHOWCASE_COUNT);
-  service.gallery = expand(service.gallery, SHOWCASE_COUNT);
-});
+// videos/gallery stay exactly as authored above — no padding/repeating.
+// The stellar gallery (tag.html) shows each category's real clip count as-is
+// (Events genuinely has 1 clip today, Hospitality has 20); duplicating a
+// single clip to hit a fixed count used to make sense for the old flat
+// "wall" layout, but in a 3D gallery where every card is a distinct,
+// clickable, individually-labeled reel, repeats just read as a bug.
 
 export function findService(categoryTitle) {
   return SERVICES.find(s => s.title.toLowerCase() === String(categoryTitle).toLowerCase());

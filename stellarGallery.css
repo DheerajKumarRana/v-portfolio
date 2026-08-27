@@ -1,0 +1,300 @@
+/* ==========================================
+   STELLAR GALLERY — 3D video galaxy (Portfolio flow on tag.html)
+   ========================================== */
+
+/* Reserves scroll room below the fixed starfield so the fixed dial at the
+   bottom of the viewport never overlaps it — the gallery itself is fixed
+   (see below) so it doesn't actually need visual height here, only this
+   padding's contribution to the page's total scrollable height. */
+.stellar-gallery-section {
+  position: relative;
+  padding-bottom: 26rem;
+}
+
+/* Fixed full-viewport backdrop, behind everything (.tag-page's heading
+   sits on top of it via a higher z-index, with no background of its own)
+   — the starfield reads as the page's actual background rather than a
+   panel that starts only below the heading. */
+.stellar-gallery {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 40%, #0c1016 0%, #0d0d0e 70%);
+  cursor: grab;
+}
+
+.stellar-gallery:active {
+  cursor: grabbing;
+}
+
+/* ---------- Card ---------- */
+.stellar-card {
+  width: 168px;
+  height: 220px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #1f2121;
+  padding: 0.6rem 0.6rem 0.8rem 0.6rem;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+}
+
+.stellar-card:hover {
+  box-shadow: 0 25px 50px rgba(49, 184, 198, 0.35), 0 0 30px rgba(49, 184, 198, 0.2);
+  border-color: rgba(49, 184, 198, 0.5);
+  transform: scale(1.06);
+}
+
+.stellar-card video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 8px;
+  pointer-events: none;
+  background: #0a0a0a;
+}
+
+.stellar-card-overlay {
+  position: absolute;
+  inset: 0.6rem 0.6rem 0.8rem 0.6rem;
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.05) 22%, rgba(0, 0, 0, 0.05) 52%, rgba(0, 0, 0, 0.8) 100%);
+  pointer-events: none;
+}
+
+.stellar-card-rec {
+  position: absolute;
+  top: 1.1rem;
+  left: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+.stellar-card-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ff4d4d;
+  box-shadow: 0 0 6px rgba(255, 77, 77, 0.8);
+  animation: stellar-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes stellar-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+.stellar-card-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 3.2rem;
+  height: 3.2rem;
+  color: #fff;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+  pointer-events: none;
+  transition: transform 0.3s ease;
+}
+
+.stellar-card:hover .stellar-card-play {
+  transform: translate(-50%, -50%) scale(1.15);
+}
+
+.stellar-card-play svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Swaps in for the play icon while the clip is buffering, so hovering a
+   slow-to-start clip reads as "loading" rather than "broken". */
+.stellar-card.is-buffering .stellar-card-play {
+  opacity: 0;
+}
+
+.stellar-card-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2rem;
+  height: 2rem;
+  margin: -1rem 0 0 -1rem;
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #fff;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  animation: stellar-spin 0.8s linear infinite;
+  transition: opacity 0.2s ease;
+}
+
+.stellar-card.is-buffering .stellar-card-spinner {
+  opacity: 1;
+}
+
+@keyframes stellar-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Per-card mute toggle — independent of hover */
+.stellar-card-mute {
+  position: absolute;
+  right: 0.7rem;
+  bottom: 2.2rem;
+  z-index: 2;
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+}
+
+.stellar-card-mute:hover {
+  background: rgba(0, 0, 0, 0.65);
+  border-color: rgba(255, 255, 255, 0.8);
+  transform: scale(1.08);
+}
+
+.stellar-card-mute svg {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.stellar-card-mute.is-muted .wave-line { display: none; }
+.stellar-card-mute:not(.is-muted) .mute-line { display: none; }
+
+.stellar-card-title {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: 12%;
+  margin: 0;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.65);
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- Modal ---------- */
+.stellar-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.stellar-modal.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.stellar-modal-card {
+  position: relative;
+  width: min(90vw, 420px);
+  background: #1f2121;
+  border-radius: 16px;
+  padding: 1.2rem;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+  transform: translateY(16px) scale(0.97);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.stellar-modal.is-open .stellar-modal-card {
+  transform: translateY(0) scale(1);
+}
+
+.stellar-modal-close {
+  position: absolute;
+  top: -2.6rem;
+  right: 0;
+  width: 2.2rem;
+  height: 2.2rem;
+  border: none;
+  background: none;
+  color: #fff;
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.stellar-modal-close:hover {
+  opacity: 1;
+}
+
+.stellar-modal-video-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+  margin-bottom: 1rem;
+}
+
+.stellar-modal-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.stellar-modal-title {
+  margin: 0;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .stellar-gallery-section {
+    padding-bottom: 16rem;
+  }
+
+  .stellar-card {
+    width: 132px;
+    height: 174px;
+  }
+
+  .stellar-card-title {
+    font-size: 0.72rem;
+  }
+}

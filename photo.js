@@ -1,55 +1,40 @@
 import { initDial } from './dial.js';
+import { SERVICES } from './servicesData.js';
 
 // ==========================================
-// 1. IMAGE DATA
+// 1. CARD DATA — the 7 real service categories only (no placeholder model
+// photos). Each card opens that category's full reel on tag.html.
 // ==========================================
-const photos = [
-  { src: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&q=80', name: 'Elle' },
-  { src: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&q=80', name: 'Sophia' },
-  { src: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600&q=80', name: 'Arianna' },
-  {
-    src: 'https://images.unsplash.com/photo-1492619375914-88005aa9e8fb?w=600&q=80',
-    name: 'Video Services',
-    isVideo: true,
-    href: './video-services.html',
-  },
-  { src: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600&q=80', name: 'Marcus' },
-  { src: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=600&q=80', name: 'Mai' },
-  { src: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&q=80', name: 'Luna' },
-  { src: 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=600&q=80', name: 'Jade' },
-  { src: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&q=80', name: 'Rosa' },
-  { src: 'https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?w=600&q=80', name: 'Ava' },
-  { src: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600&q=80', name: 'Daniel' },
-  { src: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80', name: 'James' },
-  { src: 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=600&q=80', name: 'Nina' },
-  { src: 'https://images.unsplash.com/photo-1521119989659-a83eee488004?w=600&q=80', name: 'Alex' },
-  { src: 'https://images.unsplash.com/photo-1496345875659-11f7dd282d1d?w=600&q=80', name: 'Chris' },
-];
+// view=sphere — the Portfolio flow opens each category's reel as the
+// Fibonacci-sphere 3D gallery; the Services flow (see services.js) opens
+// the same category as a plain card grid instead. Same tag.html page,
+// different presentation depending on where the visitor came from.
+const photos = SERVICES.map((service) => ({
+  src: service.img,
+  name: service.title,
+  href: `./tag.html?category=${encodeURIComponent(service.title)}&tag=All&view=sphere`,
+}));
 
 // ==========================================
-// 2. BUILD GALLERY (triple the images for seamless infinite loop)
+// 2. BUILD GALLERY (triple the cards for seamless infinite loop)
 // ==========================================
 const track = document.getElementById('gallery-track');
+const PLAY_ICON = `<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" stroke="currentColor" stroke-width="1.3"/><path d="M10 8.5 16 12l-6 3.5v-7Z" fill="currentColor"/></svg>`;
 
 // Create 3 copies for infinite scrolling
 const allPhotos = [...photos, ...photos, ...photos];
 
 allPhotos.forEach((photo) => {
   const card = document.createElement('div');
-  card.className = photo.isVideo ? 'photo-card video-card' : 'photo-card';
+  card.className = 'photo-card video-card';
   card.innerHTML = `
     <img src="${photo.src}" alt="${photo.name}" loading="eager" />
-    <div class="photo-card-name">${photo.name}</div>
-    ${photo.isVideo ? `
-      <div class="video-card-overlay"></div>
-      <div class="video-card-play" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" stroke="currentColor" stroke-width="1.3"/><path d="M10 8.5 16 12l-6 3.5v-7Z" fill="currentColor"/></svg>
-      </div>
-    ` : ''}
+    <div class="video-card-overlay"></div>
+    <div class="video-card-rec"><span class="video-card-dot"></span>REEL</div>
+    <div class="video-card-play" aria-hidden="true">${PLAY_ICON}</div>
+    <div class="video-card-caption">${photo.name}</div>
   `;
-  if (photo.isVideo) {
-    card.addEventListener('click', () => { window.location.href = photo.href; });
-  }
+  card.addEventListener('click', () => { window.location.href = photo.href; });
   track.appendChild(card);
 });
 
