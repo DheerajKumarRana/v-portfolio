@@ -183,16 +183,32 @@ export function initDial() {
   // vertical drag across the dial to the same one-notch-at-a-time stepping
   // the wheel handler uses above. Swiping up (finger travels toward the top
   // of the screen) advances forward, matching the direction a page scrolls.
+  //
+  // Bound on window and gated by the finger's Y position (not by hit-testing
+  // whatever DOM element the touch happened to land on) — the dial is a
+  // fixed, mostly-off-screen box whose visible ring is drawn by children
+  // with pointer-events:none, which made target-based detection unreliable
+  // on pages that also scroll (tag.html/services.html): a swipe over the
+  // ring could still fall through to the scrollable page underneath. A
+  // touch that starts within the dial's actual on-screen band always
+  // controls the dial instead, regardless of which element is technically
+  // hit — everywhere else keeps scrolling the page normally.
   let touchY = null;
   let touchAccum = 0;
   const SWIPE_STEP_PX = 40;
+  const DIAL_TOUCH_ZONE_PX = 170;
 
-  menuContainer.addEventListener('touchstart', (e) => {
+  function isInDialZone(clientY) {
+    return window.innerHeight - clientY < DIAL_TOUCH_ZONE_PX;
+  }
+
+  window.addEventListener('touchstart', (e) => {
+    if (!isInDialZone(e.touches[0].clientY)) { touchY = null; return; }
     touchY = e.touches[0].clientY;
     touchAccum = 0;
   }, { passive: true });
 
-  menuContainer.addEventListener('touchmove', (e) => {
+  window.addEventListener('touchmove', (e) => {
     if (touchY === null) return;
     e.preventDefault();
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -212,8 +228,8 @@ export function initDial() {
     touchY = null;
     touchAccum = 0;
   }
-  menuContainer.addEventListener('touchend', endTouch, { passive: true });
-  menuContainer.addEventListener('touchcancel', endTouch, { passive: true });
+  window.addEventListener('touchend', endTouch, { passive: true });
+  window.addEventListener('touchcancel', endTouch, { passive: true });
 
   // Animate the arch with a light spring instead of a flat ease — it glides
   // toward the target, drifts a touch past it, then settles, which is what

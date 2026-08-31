@@ -73,11 +73,13 @@ window.addEventListener('wheel', (e) => {
   targetScrollX -= e.deltaY * 1.5; // Scroll sensitivity
 }, { passive: true });
 
-// Touch support — ignored over the dial so a thumb-swipe there rotates
-// the dial (see dial.js) instead of also dragging the gallery underneath it
+// Touch support — ignored in the bottom band where the dial lives (same
+// zone dial.js itself gates on) so a thumb-swipe there rotates the dial
+// instead of also dragging the gallery underneath it
+const DIAL_TOUCH_ZONE_PX = 170;
 let touchStartX = 0;
 window.addEventListener('touchstart', (e) => {
-  if (e.target.closest('.photo-page-menu')) { touchStartX = null; return; }
+  if (window.innerHeight - e.touches[0].clientY < DIAL_TOUCH_ZONE_PX) { touchStartX = null; return; }
   touchStartX = e.touches[0].clientX;
 });
 window.addEventListener('touchmove', (e) => {
