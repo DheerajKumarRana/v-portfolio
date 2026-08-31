@@ -317,4 +317,16 @@
     width: 2.6rem;
     height: 2.6rem;
   }
+
+  /* Square works next to a wide desktop track, but these clips are actually
+     vertical reels — go portrait on mobile instead of cropping them into a
+     square. Track height is derived from the same --cf-card width var so it
+     grows to match instead of clipping the taller card. */
+  .cf-card {
+    aspect-ratio: 3 / 4;
+  }
+
+  .cf-track {
+    height: calc(var(--cf-card) * 4 / 3);
+  }
 }

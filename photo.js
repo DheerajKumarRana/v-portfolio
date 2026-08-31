@@ -46,14 +46,14 @@ const cards = document.querySelectorAll('.photo-card');
 // getBoundingClientRect() fed a transform-feedback loop).
 function getCardMetrics() {
   const w = window.innerWidth;
-  if (w <= 480) return { widthPercent: 0.74, gap: 16, trackPaddingLeft: 19.2 };
-  if (w <= 900) return { widthPercent: 0.62, gap: 16, trackPaddingLeft: 19.2 };
+  if (w <= 480) return { widthPercent: 0.64, gap: 16, trackPaddingLeft: 19.2 };
+  if (w <= 900) return { widthPercent: 0.60, gap: 16, trackPaddingLeft: 19.2 };
   return { widthPercent: 0.22, gap: 24, trackPaddingLeft: 32 };
 }
 
-const { widthPercent, gap, trackPaddingLeft } = getCardMetrics();
-const cardWidth = window.innerWidth * widthPercent;
-const singleSetWidth = photos.length * (cardWidth + gap);
+let { gap, trackPaddingLeft } = getCardMetrics();
+let cardWidth = window.innerWidth * getCardMetrics().widthPercent;
+let singleSetWidth = photos.length * (cardWidth + gap);
 
 // ==========================================
 // 3. SCROLL STATE
@@ -73,12 +73,15 @@ window.addEventListener('wheel', (e) => {
   targetScrollX -= e.deltaY * 1.5; // Scroll sensitivity
 }, { passive: true });
 
-// Touch support
+// Touch support — ignored over the dial so a thumb-swipe there rotates
+// the dial (see dial.js) instead of also dragging the gallery underneath it
 let touchStartX = 0;
 window.addEventListener('touchstart', (e) => {
+  if (e.target.closest('.photo-page-menu')) { touchStartX = null; return; }
   touchStartX = e.touches[0].clientX;
 });
 window.addEventListener('touchmove', (e) => {
+  if (touchStartX === null) return;
   ensureWindAudio();
   const delta = touchStartX - e.touches[0].clientX;
   targetScrollX -= delta * 2;
@@ -222,10 +225,28 @@ function animate() {
 animate();
 
 // ==========================================
-// 7. RESIZE HANDLER
+// 7. RESIZE HANDLER — re-derive metrics when a breakpoint is actually
+// crossed (not on every pixel of a drag-resize/rotate), rescaling scrollX
+// by the same ratio so the currently-centered card stays centered instead
+// of jumping to whatever raw pixel offset the old metrics left it at
 // ==========================================
+let lastMetricsBucket = window.innerWidth <= 480 ? 'small' : window.innerWidth <= 900 ? 'mid' : 'wide';
 window.addEventListener('resize', () => {
-  // Recalculate on resize if needed
+  const bucket = window.innerWidth <= 480 ? 'small' : window.innerWidth <= 900 ? 'mid' : 'wide';
+  if (bucket === lastMetricsBucket) return;
+  lastMetricsBucket = bucket;
+
+  const metrics = getCardMetrics();
+  const newCardWidth = window.innerWidth * metrics.widthPercent;
+  const newSingleSetWidth = photos.length * (newCardWidth + metrics.gap);
+  const ratio = newSingleSetWidth / singleSetWidth;
+
+  scrollX *= ratio;
+  targetScrollX *= ratio;
+  cardWidth = newCardWidth;
+  gap = metrics.gap;
+  trackPaddingLeft = metrics.trackPaddingLeft;
+  singleSetWidth = newSingleSetWidth;
 });
 
 // ==========================================

@@ -25,8 +25,15 @@ export function initDial() {
   const numMenuItems = mainMenuItems.length;
   if (!numMenuItems) return;
 
-  // Position items around a genuine half-ring
-  const archAngleSpacing = 34;
+  // Position items around a genuine half-ring. The ring's radius shrinks
+  // more on mobile (photo.css) than the label font does, so the same
+  // angular spacing leaves adjacent titles crowding/overlapping — widen it
+  // there to keep the same visual gap between labels. Tracks the breakpoint
+  // live (matchMedia, not a one-time innerWidth check) so it stays correct
+  // if the viewport is resized/rotated after load instead of only on the
+  // width the page happened to first render at.
+  const mobileDialQuery = window.matchMedia('(max-width: 900px)');
+  let archAngleSpacing = mobileDialQuery.matches ? 50 : 34;
 
   // Whichever item already carries "active" in the markup is this page's
   // actual current page — it gets a permanent marker (currentPageIndex) that
@@ -105,6 +112,24 @@ export function initDial() {
   let activeMenuIndex = currentPageIndex;
   setIcon(activeMenuIndex);
 
+  // Re-derive every item's base angle from the (possibly just-changed)
+  // archAngleSpacing, then snap the rotation state to match so crossing the
+  // breakpoint doesn't leave the ring spun to angles computed for the other
+  // layout.
+  function recomputeBaseAngles() {
+    mainMenuItems.forEach((item, i) => {
+      item.dataset.baseAngle = (i - currentPageIndex) * archAngleSpacing;
+    });
+    const activeBaseAngle = parseFloat(mainMenuItems[activeMenuIndex].dataset.baseAngle);
+    archRotation = -activeBaseAngle;
+    targetArchRotation = -activeBaseAngle;
+  }
+
+  mobileDialQuery.addEventListener('change', (e) => {
+    archAngleSpacing = e.matches ? 50 : 34;
+    recomputeBaseAngles();
+  });
+
   // Jump the ring straight to a given item — one deterministic step, not a
   // free-form drag. This is what makes each scroll notch land exactly on
   // the next/previous title instead of drifting to an arbitrary angle.
@@ -153,6 +178,42 @@ export function initDial() {
       goToIndex(i);
     });
   });
+
+  // Touch / thumb-swipe support — phones have no wheel input, so map a
+  // vertical drag across the dial to the same one-notch-at-a-time stepping
+  // the wheel handler uses above. Swiping up (finger travels toward the top
+  // of the screen) advances forward, matching the direction a page scrolls.
+  let touchY = null;
+  let touchAccum = 0;
+  const SWIPE_STEP_PX = 40;
+
+  menuContainer.addEventListener('touchstart', (e) => {
+    touchY = e.touches[0].clientY;
+    touchAccum = 0;
+  }, { passive: true });
+
+  menuContainer.addEventListener('touchmove', (e) => {
+    if (touchY === null) return;
+    e.preventDefault();
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    const y = e.touches[0].clientY;
+    touchAccum += y - touchY;
+    touchY = y;
+
+    while (Math.abs(touchAccum) >= SWIPE_STEP_PX) {
+      const direction = touchAccum > 0 ? -1 : 1;
+      goToIndex(activeMenuIndex + direction);
+      touchAccum -= Math.sign(touchAccum) * SWIPE_STEP_PX;
+    }
+  }, { passive: false });
+
+  function endTouch() {
+    touchY = null;
+    touchAccum = 0;
+  }
+  menuContainer.addEventListener('touchend', endTouch, { passive: true });
+  menuContainer.addEventListener('touchcancel', endTouch, { passive: true });
 
   // Animate the arch with a light spring instead of a flat ease — it glides
   // toward the target, drifts a touch past it, then settles, which is what
