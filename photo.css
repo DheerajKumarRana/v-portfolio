@@ -272,7 +272,7 @@
 /* Outer ring line — radius 280px */
 .photo-page-menu .bangle {
   position: absolute;
-  top: 50%;
+  top: 51%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 560px;
@@ -288,7 +288,7 @@
    any background instead of relying on a single low-contrast white stroke. */
 .photo-page-menu .bangle-inner {
   position: absolute;
-  top: 50%;
+  top: 48%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 380px;

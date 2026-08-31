@@ -179,54 +179,90 @@ export function initDial() {
     });
   });
 
-  // Touch / thumb-swipe support — phones have no wheel input, so map a
-  // vertical drag across the dial to the same one-notch-at-a-time stepping
-  // the wheel handler uses above. Swiping up (finger travels toward the top
-  // of the screen) advances forward, matching the direction a page scrolls.
+  // Touch / thumb-drag support — phones have no wheel input. Tracks the
+  // finger's ANGLE around the ring's actual center (not just its raw up/down
+  // distance), so the ring genuinely follows a circular drag: dragging along
+  // the curve at the sides rotates it exactly like dragging a real watch
+  // bezel, rather than only reacting to straight vertical motion. It follows
+  // continuously while dragging (no notch-snapping mid-gesture, so it feels
+  // smooth) and snaps to the nearest title only once the finger lifts.
   //
-  // Bound on window and gated by the finger's Y position (not by hit-testing
-  // whatever DOM element the touch happened to land on) — the dial is a
-  // fixed, mostly-off-screen box whose visible ring is drawn by children
-  // with pointer-events:none, which made target-based detection unreliable
-  // on pages that also scroll (tag.html/services.html): a swipe over the
-  // ring could still fall through to the scrollable page underneath. A
-  // touch that starts within the dial's actual on-screen band always
-  // controls the dial instead, regardless of which element is technically
-  // hit — everywhere else keeps scrolling the page normally.
-  let touchY = null;
-  let touchAccum = 0;
-  const SWIPE_STEP_PX = 40;
+  // Gated by the finger's Y position (not by hit-testing whatever DOM
+  // element the touch happened to land on) — the dial is a fixed, mostly
+  // off-screen box whose visible ring is drawn by children with
+  // pointer-events:none, which made target-based detection unreliable on
+  // pages that also scroll (tag.html/services.html): a swipe over the ring
+  // could still fall through to the scrollable page underneath. A touch
+  // that starts within the dial's actual on-screen band always controls the
+  // dial instead, regardless of which element is technically hit —
+  // everywhere else keeps scrolling the page normally.
   const DIAL_TOUCH_ZONE_PX = 170;
+  let dragging = false;
+  let dragCenterX = 0;
+  let dragCenterY = 0;
+  let dragStartAngle = 0;
+  let dragStartArch = 0;
 
-  function isInDialZone(clientY) {
-    return window.innerHeight - clientY < DIAL_TOUCH_ZONE_PX;
+  function angleFromCenter(x, y) {
+    return Math.atan2(y - dragCenterY, x - dragCenterX) * (180 / Math.PI);
+  }
+
+  // Snaps to whichever title's base angle is closest to the ring's current
+  // rotation — always re-pins targetArchRotation exactly, even when that
+  // turns out to be the item already active, so a drag that springs back to
+  // its start doesn't leave the ring resting a few degrees off from true.
+  function snapToNearestItem() {
+    let bestIndex = activeMenuIndex;
+    let bestDiff = Infinity;
+    mainMenuItems.forEach((item, i) => {
+      const baseAngle = parseFloat(item.dataset.baseAngle);
+      const diff = Math.abs(-baseAngle - targetArchRotation);
+      if (diff < bestDiff) { bestDiff = diff; bestIndex = i; }
+    });
+    targetArchRotation = -parseFloat(mainMenuItems[bestIndex].dataset.baseAngle);
+    if (bestIndex !== activeMenuIndex) {
+      activeMenuIndex = bestIndex;
+      mainMenuItems.forEach(item => item.classList.remove('active'));
+      mainMenuItems[bestIndex].classList.add('active');
+      playTick();
+      setIcon(bestIndex);
+    }
   }
 
   window.addEventListener('touchstart', (e) => {
-    if (!isInDialZone(e.touches[0].clientY)) { touchY = null; return; }
-    touchY = e.touches[0].clientY;
-    touchAccum = 0;
+    const t = e.touches[0];
+    if (window.innerHeight - t.clientY >= DIAL_TOUCH_ZONE_PX) { dragging = false; return; }
+
+    // menuContainer's own position/transform only ever toggles between two
+    // fixed CSS states (see .is-dial-active) — never driven per-frame from
+    // JS — so reading its rect once here is safe and always current,
+    // unlike the gallery's per-frame transform math (see photo.js).
+    const rect = menuContainer.getBoundingClientRect();
+    dragCenterX = rect.left + rect.width / 2;
+    dragCenterY = rect.top + rect.height / 2;
+
+    dragging = true;
+    dragStartAngle = angleFromCenter(t.clientX, t.clientY);
+    dragStartArch = targetArchRotation;
   }, { passive: true });
 
   window.addEventListener('touchmove', (e) => {
-    if (touchY === null) return;
+    if (!dragging) return;
     e.preventDefault();
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    const y = e.touches[0].clientY;
-    touchAccum += y - touchY;
-    touchY = y;
-
-    while (Math.abs(touchAccum) >= SWIPE_STEP_PX) {
-      const direction = touchAccum > 0 ? -1 : 1;
-      goToIndex(activeMenuIndex + direction);
-      touchAccum -= Math.sign(touchAccum) * SWIPE_STEP_PX;
-    }
+    const t = e.touches[0];
+    let delta = angleFromCenter(t.clientX, t.clientY) - dragStartAngle;
+    if (delta > 180) delta -= 360;
+    else if (delta < -180) delta += 360;
+    targetArchRotation = dragStartArch + delta;
   }, { passive: false });
 
   function endTouch() {
-    touchY = null;
-    touchAccum = 0;
+    if (!dragging) return;
+    dragging = false;
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    snapToNearestItem();
   }
   window.addEventListener('touchend', endTouch, { passive: true });
   window.addEventListener('touchcancel', endTouch, { passive: true });
