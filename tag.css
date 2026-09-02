@@ -53,7 +53,7 @@ body {
 
 .tag-title {
   margin: 0 0 0.4rem 0;
-  font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+  font-size: clamp(1.4rem, 1.4vw, 1.9rem);
   font-weight: 700;
   color: #fff;
 }

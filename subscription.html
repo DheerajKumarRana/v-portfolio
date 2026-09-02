@@ -4,14 +4,13 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Services | 213 MEECH</title>
+    <title>Subscription | 213 MEECH</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="./photo.css">
-    <link rel="stylesheet" href="./services.css">
-    <link rel="stylesheet" href="./frameGrid.css">
+    <link rel="stylesheet" href="./subscription.css">
   </head>
   <body>
     <!-- Top Center Logo -->
@@ -29,15 +28,57 @@
       <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="3.8"/><circle cx="17.2" cy="6.8" r="1"/></svg></a>
     </div>
 
-    <!-- Hover-expand video mosaic — one tile per category, playing a real
-         clip on hover; click opens that category's full showcase. The only
-         content on this page. -->
-    <main class="vs-page">
-      <section class="frame-grid-section">
-        <span class="frame-grid-eyebrow">213 MEECH — SERVICES — Hover a tile · Click to explore</span>
-        <div class="frame-grid" id="frame-grid">
-          <!-- cells injected by services.js -->
+    <main class="sub-page">
+      <!-- Screen 1: pick a service. Hover a title to preview its image
+           (see subscription.js); click to reveal that service's plans. -->
+      <section class="sub-select" id="sub-select">
+        <span class="sub-eyebrow">213 MEECH — SUBSCRIPTION — Hover a service · Click to see plans</span>
+        <div class="sub-select-grid">
+          <div class="sub-select-list" id="sub-select-list">
+            <!-- items injected by subscription.js -->
+          </div>
+          <div class="sub-select-media" id="sub-select-media">
+            <!-- images injected by subscription.js -->
+          </div>
         </div>
+      </section>
+
+      <!-- Screen 2: plans for the picked service — hidden until a service
+           is chosen above. -->
+      <section class="sub-pricing" id="sub-pricing" hidden>
+        <nav class="sub-breadcrumb">
+          <button type="button" class="sub-back" id="sub-back">&larr; All services</button>
+          <span>/</span>
+          <span class="current" id="sub-pricing-service">Service</span>
+        </nav>
+
+        <div class="sub-pricing-head">
+          <div class="sub-pricing-head-text">
+            <h1 class="sub-pricing-title">Plans &amp; Pricing</h1>
+            <p class="sub-pricing-sub" id="sub-pricing-sub">Pick a cadence that matches how often you need new content.</p>
+          </div>
+
+          <div class="sub-switch" id="sub-switch">
+            <button type="button" class="sub-switch-btn is-active" data-period="monthly">Monthly</button>
+            <button type="button" class="sub-switch-btn" data-period="yearly">Yearly <span class="sub-switch-save">Save 17%</span></button>
+            <span class="sub-switch-thumb" id="sub-switch-thumb"></span>
+          </div>
+        </div>
+
+        <div class="sub-pricing-grid" id="sub-pricing-grid">
+          <!-- plan cards injected by subscription.js -->
+        </div>
+
+        <!-- Feature-by-feature breakdown of the same 3 plans — desktop/tablet
+             only, the cards above already cover this on mobile. -->
+        <section class="sub-compare" id="sub-compare">
+          <h2 class="sub-compare-title">Detailed feature comparison</h2>
+          <div class="sub-compare-scroll">
+            <table class="sub-compare-table" id="sub-compare-table">
+              <!-- head + rows injected by subscription.js -->
+            </table>
+          </div>
+        </section>
       </section>
     </main>
 
@@ -56,9 +97,9 @@
           <div class="menu-items" id="rainbow-menu">
             <a href="./index.html" class="menu-item" data-index="0"><span>HOME</span></a>
             <a href="#" class="menu-item" data-index="1"><span>ABOUT US</span></a>
-            <a href="./services.html" class="menu-item active" data-index="2"><span>SERVICES</span></a>
+            <a href="./services.html" class="menu-item" data-index="2"><span>SERVICES</span></a>
             <a href="./photo.html" class="menu-item" data-index="3"><span>PORTFOLIO</span></a>
-            <a href="./subscription.html" class="menu-item" data-index="4"><span>SUBSCRIPTION</span></a>
+            <a href="./subscription.html" class="menu-item active" data-index="4"><span>SUBSCRIPTION</span></a>
             <a href="#" class="menu-item" data-index="5"><span>BOOK</span></a>
           </div>
         </div>
@@ -67,6 +108,6 @@
 
     </div>
 
-    <script type="module" src="/services.js"></script>
+    <script type="module" src="/subscription.js"></script>
   </body>
 </html>
