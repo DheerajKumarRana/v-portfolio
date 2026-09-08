@@ -1,5 +1,4 @@
 import nodemailer from 'nodemailer';
-import { createClient } from '@supabase/supabase-js';
 import { enquiryReceivedEmail, bookingConfirmedEmail, ownerAlertEmail } from '../emailTemplates.js';
 
 // ==========================================
@@ -38,21 +37,59 @@ function makeTransport(env) {
   });
 }
 
-/** Resolves the caller to an allowlisted admin, or null. */
-async function resolveAdmin(supabase, authHeader) {
+// Supabase is reached over plain HTTP rather than through supabase-js. The
+// SDK boots a Realtime client that needs a WebSocket global, which Node 20
+// doesn't have — and the serverless Node version isn't ours to guarantee.
+// These four calls are all this endpoint needs, with no runtime assumptions
+// and a smaller cold start.
+
+function serviceHeaders(env, extra = {}) {
+  return {
+    apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+    Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+    ...extra,
+  };
+}
+
+async function fetchBooking(env, id) {
+  const url = `${env.SUPABASE_URL}/rest/v1/bookings?id=eq.${encodeURIComponent(id)}&select=*`;
+  const response = await fetch(url, { headers: serviceHeaders(env) });
+  if (!response.ok) return null;
+  const [booking] = await response.json();
+  return booking ?? null;
+}
+
+async function stampSent(env, id, column) {
+  const url = `${env.SUPABASE_URL}/rest/v1/bookings?id=eq.${encodeURIComponent(id)}`;
+  await fetch(url, {
+    method: 'PATCH',
+    headers: serviceHeaders(env, { 'Content-Type': 'application/json' }),
+    body: JSON.stringify({ [column]: new Date().toISOString() }),
+  });
+}
+
+/** Resolves the caller to an allowlisted admin, or null. Verifies the token
+ *  with Supabase Auth, then checks it against the `admins` table. */
+async function resolveAdmin(env, authHeader) {
   const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
   if (!token) return null;
 
-  const { data, error } = await supabase.auth.getUser(token);
-  if (error || !data?.user) return null;
+  const userResponse = await fetch(`${env.SUPABASE_URL}/auth/v1/user`, {
+    headers: { apikey: env.SUPABASE_SERVICE_ROLE_KEY, Authorization: `Bearer ${token}` },
+  });
+  if (!userResponse.ok) return null;
 
-  const { data: adminRow } = await supabase
-    .from('admins')
-    .select('user_id')
-    .eq('user_id', data.user.id)
-    .maybeSingle();
+  const user = await userResponse.json();
+  if (!user?.id) return null;
 
-  return adminRow ? data.user : null;
+  const adminResponse = await fetch(
+    `${env.SUPABASE_URL}/rest/v1/admins?user_id=eq.${encodeURIComponent(user.id)}&select=user_id`,
+    { headers: serviceHeaders(env) },
+  );
+  if (!adminResponse.ok) return null;
+
+  const [adminRow] = await adminResponse.json();
+  return adminRow ? user : null;
 }
 
 export default async function handler(req, res) {
@@ -69,19 +106,10 @@ export default async function handler(req, res) {
     return res.status(400).json({ sent: false, reason: 'invalid_booking_id' });
   }
 
-  // Service-role client: this runs on the server, so it can read the row
-  // that RLS deliberately hides from the browser.
-  const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
-
-  const { data: booking, error } = await supabase
-    .from('bookings')
-    .select('*')
-    .eq('id', bookingId)
-    .maybeSingle();
-
-  if (error || !booking) return res.status(404).json({ sent: false, reason: 'booking_not_found' });
+  // Reads run with the service-role key: this is the server, so it can see
+  // the row that RLS deliberately hides from the browser.
+  const booking = await fetchBooking(env, bookingId);
+  if (!booking) return res.status(404).json({ sent: false, reason: 'booking_not_found' });
 
   try {
     const transport = makeTransport(env);
@@ -103,10 +131,7 @@ export default async function handler(req, res) {
         html: clientMail.html,
       });
 
-      await supabase
-        .from('bookings')
-        .update({ enquiry_email_sent_at: new Date().toISOString() })
-        .eq('id', booking.id);
+      await stampSent(env, booking.id, 'enquiry_email_sent_at');
 
       // The studio's own heads-up. Sent after the client's mail and allowed
       // to fail on its own — the client's receipt is the one that matters.
@@ -128,7 +153,7 @@ export default async function handler(req, res) {
     }
 
     if (action === 'confirmed') {
-      const admin = await resolveAdmin(supabase, req.headers.authorization);
+      const admin = await resolveAdmin(env, req.headers.authorization);
       if (!admin) return res.status(401).json({ sent: false, reason: 'not_authorized' });
 
       if (booking.confirmation_email_sent_at && !resend) {
@@ -145,10 +170,7 @@ export default async function handler(req, res) {
         html: mail.html,
       });
 
-      await supabase
-        .from('bookings')
-        .update({ confirmation_email_sent_at: new Date().toISOString() })
-        .eq('id', booking.id);
+      await stampSent(env, booking.id, 'confirmation_email_sent_at');
 
       return res.status(200).json({ sent: true });
     }
