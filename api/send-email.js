@@ -27,7 +27,24 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 function getEnv() {
   const { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, GMAIL_USER, GMAIL_APP_PASSWORD } = process.env;
   if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY || !GMAIL_USER || !GMAIL_APP_PASSWORD) return null;
-  return { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, GMAIL_USER, GMAIL_APP_PASSWORD };
+  // Strip a trailing slash so `${url}/rest/v1/...` can't become a double slash.
+  return {
+    SUPABASE_URL: SUPABASE_URL.replace(/\/+$/, ''),
+    SUPABASE_SERVICE_ROLE_KEY,
+    GMAIL_USER,
+    GMAIL_APP_PASSWORD,
+  };
+}
+
+/** The publishable key is the browser's key: it has RLS applied, so with it
+ *  every booking lookup here comes back empty and the endpoint looks like it
+ *  simply can't find anything. Catching the mix-up by shape turns a silent,
+ *  very confusing failure into a message that names the actual problem. */
+function serviceKeyProblem(key) {
+  if (key.startsWith('sb_publishable_') || key.startsWith('sb_anon_')) {
+    return 'service_role_key_is_actually_the_publishable_key';
+  }
+  return null;
 }
 
 function makeTransport(env) {
@@ -51,12 +68,27 @@ function serviceHeaders(env, extra = {}) {
   };
 }
 
+/** Returns { booking } or { error } — the two failure modes are kept apart
+ *  because "the database refused me" and "no such row" need very different
+ *  fixes, and collapsing both into 404 hides misconfiguration. */
 async function fetchBooking(env, id) {
   const url = `${env.SUPABASE_URL}/rest/v1/bookings?id=eq.${encodeURIComponent(id)}&select=*`;
-  const response = await fetch(url, { headers: serviceHeaders(env) });
-  if (!response.ok) return null;
+
+  let response;
+  try {
+    response = await fetch(url, { headers: serviceHeaders(env) });
+  } catch (err) {
+    console.error('Supabase unreachable', err);
+    return { error: 'supabase_unreachable' };
+  }
+
+  if (!response.ok) {
+    console.error('Booking lookup rejected', response.status, await response.text().catch(() => ''));
+    return { error: 'booking_lookup_rejected' };
+  }
+
   const [booking] = await response.json();
-  return booking ?? null;
+  return booking ? { booking } : { error: 'booking_not_found' };
 }
 
 async function stampSent(env, id, column) {
@@ -101,6 +133,9 @@ export default async function handler(req, res) {
   const env = getEnv();
   if (!env) return res.status(500).json({ sent: false, reason: 'email_not_configured' });
 
+  const keyProblem = serviceKeyProblem(env.SUPABASE_SERVICE_ROLE_KEY);
+  if (keyProblem) return res.status(500).json({ sent: false, reason: keyProblem });
+
   const { action, bookingId, resend } = req.body ?? {};
   if (!UUID_RE.test(bookingId ?? '')) {
     return res.status(400).json({ sent: false, reason: 'invalid_booking_id' });
@@ -108,8 +143,11 @@ export default async function handler(req, res) {
 
   // Reads run with the service-role key: this is the server, so it can see
   // the row that RLS deliberately hides from the browser.
-  const booking = await fetchBooking(env, bookingId);
-  if (!booking) return res.status(404).json({ sent: false, reason: 'booking_not_found' });
+  const lookup = await fetchBooking(env, bookingId);
+  if (lookup.error) {
+    return res.status(lookup.error === 'booking_not_found' ? 404 : 500).json({ sent: false, reason: lookup.error });
+  }
+  const { booking } = lookup;
 
   try {
     const transport = makeTransport(env);
