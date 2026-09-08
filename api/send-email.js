@@ -27,12 +27,18 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 function getEnv() {
   const { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, GMAIL_USER, GMAIL_APP_PASSWORD } = process.env;
   if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY || !GMAIL_USER || !GMAIL_APP_PASSWORD) return null;
-  // Strip a trailing slash so `${url}/rest/v1/...` can't become a double slash.
+  // Everything is trimmed: pasting a value into a dashboard field very
+  // easily carries a trailing newline or space, which travels into the
+  // Authorization header and gets the request rejected outright — a failure
+  // that looks nothing like "your key has a stray space on the end".
+  // The URL also loses any trailing slash so the path can't double up.
   return {
-    SUPABASE_URL: SUPABASE_URL.replace(/\/+$/, ''),
-    SUPABASE_SERVICE_ROLE_KEY,
-    GMAIL_USER,
-    GMAIL_APP_PASSWORD,
+    SUPABASE_URL: SUPABASE_URL.trim().replace(/\/+$/, ''),
+    SUPABASE_SERVICE_ROLE_KEY: SUPABASE_SERVICE_ROLE_KEY.trim(),
+    GMAIL_USER: GMAIL_USER.trim(),
+    // Google prints app passwords in four groups of four; the spaces are for
+    // reading, not part of the secret, and SMTP rejects them.
+    GMAIL_APP_PASSWORD: GMAIL_APP_PASSWORD.replace(/\s+/g, ''),
   };
 }
 
@@ -84,7 +90,10 @@ async function fetchBooking(env, id) {
 
   if (!response.ok) {
     console.error('Booking lookup rejected', response.status, await response.text().catch(() => ''));
-    return { error: 'booking_lookup_rejected' };
+    // The status is worth returning: 401/403 means the service-role key is
+    // wrong, 404 means SUPABASE_URL points somewhere unexpected. Neither
+    // reveals anything secret, and guessing between them is painful.
+    return { error: 'booking_lookup_rejected', status: response.status };
   }
 
   const [booking] = await response.json();
@@ -145,7 +154,9 @@ export default async function handler(req, res) {
   // the row that RLS deliberately hides from the browser.
   const lookup = await fetchBooking(env, bookingId);
   if (lookup.error) {
-    return res.status(lookup.error === 'booking_not_found' ? 404 : 500).json({ sent: false, reason: lookup.error });
+    return res
+      .status(lookup.error === 'booking_not_found' ? 404 : 500)
+      .json({ sent: false, reason: lookup.error, upstreamStatus: lookup.status });
   }
   const { booking } = lookup;
 
