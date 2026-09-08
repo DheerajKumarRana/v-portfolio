@@ -12,6 +12,17 @@ dist
 dist-ssr
 *.local
 
+# Secrets — the Gmail app password and Supabase service-role key used by
+# api/send-email.js. These must never reach the repo; the real values live
+# in the Vercel project's environment variables. .env.example is the only
+# one that is safe to commit, hence the exception.
+.env
+.env.*
+!.env.example
+
+# Vercel CLI
+.vercel
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

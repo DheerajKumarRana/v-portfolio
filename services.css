@@ -7,7 +7,14 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   height: auto;
-  background-color: #f4f4f4;
+  background-color: #0d0d0e;
+}
+
+/* Top chrome (logo/corner text) was tuned for a light page — flip to light
+   text now that the page background is dark (see starfield.js) */
+.corner-text {
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
 }
 
 /* Vanta.js topology backdrop — fixed behind everything else on the page */

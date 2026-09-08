@@ -1,0 +1,47 @@
+/* ==========================================
+   STARFIELD — lightweight ambient background (dark pages only)
+   A few hundred plain DOM dots animated with opacity/transform only, so
+   the browser can run it entirely on the compositor thread. No canvas, no
+   WebGL — cheap enough to run on every dark page at once, unlike the
+   dedicated Three.js starfield built into stellarGallery.js for the
+   sphere gallery.
+   ========================================== */
+
+.starfield {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  animation: starfield-drift 70s ease-in-out infinite;
+}
+
+.starfield-star {
+  position: absolute;
+  border-radius: 50%;
+  background: #fff;
+  animation-name: starfield-twinkle;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes starfield-twinkle {
+  0%, 100% { opacity: var(--starfield-min-opacity, 0.15); }
+  50% { opacity: var(--starfield-max-opacity, 0.9); }
+}
+
+@keyframes starfield-drift {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-8px, -6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .starfield {
+    animation: none;
+  }
+
+  .starfield-star {
+    animation: none;
+    opacity: 0.55;
+  }
+}

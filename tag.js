@@ -1,4 +1,5 @@
 import { initDial } from './dial.js';
+import { initStarfield } from './starfield.js';
 import { SERVICES, findService } from './servicesData.js';
 
 const params = new URLSearchParams(window.location.search);
@@ -78,6 +79,7 @@ if (view === 'sphere') {
 }
 
 // ==========================================
-// SHARED NAV DIAL
+// SHARED NAV DIAL + BACKGROUND
 // ==========================================
 initDial();
+initStarfield();

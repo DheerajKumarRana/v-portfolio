@@ -1,0 +1,675 @@
+/* ==========================================
+   OWNER DASHBOARD — internal tool, so it leans on clarity over the
+   showpiece 3D/animation work on the public pages, but keeps the same
+   dark-glass + gold palette so it still reads as the same product.
+   ========================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Several things here are toggled via the `hidden` attribute while also
+   carrying a class that sets `display` (the drawer is flex, Load more is
+   block...). An author `display` rule outranks the UA stylesheet's
+   `[hidden] { display: none }`, so without this they'd never actually
+   hide. */
+[hidden] {
+  display: none !important;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #0d0d0e;
+  color: #f0ece1;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.dash-boot {
+  padding: 3rem;
+  text-align: center;
+  color: rgba(240, 236, 225, 0.4);
+  font-size: 0.9rem;
+}
+
+/* ---------- Login gate ---------- */
+
+.dash-gate {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1.2rem;
+}
+
+.dash-gate-card {
+  width: 100%;
+  max-width: 400px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 2.2rem;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5);
+}
+
+.dash-gate-logo {
+  height: 34px;
+  width: auto;
+  display: block;
+  margin: 0 auto 1.8rem auto;
+}
+
+.dash-gate-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.35rem;
+}
+
+.dash-gate-sub {
+  font-size: 0.85rem;
+  font-weight: 300;
+  color: rgba(240, 236, 225, 0.55);
+  margin-bottom: 1.6rem;
+}
+
+/* ---------- Fields ---------- */
+
+.dash-field {
+  margin-bottom: 1.1rem;
+}
+
+.dash-field label {
+  display: block;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: rgba(240, 236, 225, 0.55);
+  margin-bottom: 0.4rem;
+}
+
+.dash-field-hint {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: rgba(240, 236, 225, 0.35);
+}
+
+.dash-field input,
+.dash-field textarea,
+.dash-search,
+.dash-select,
+.dash-custom-range input {
+  width: 100%;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.88rem;
+  color: #f0ece1;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  padding: 0.7rem 0.85rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dash-field input:focus,
+.dash-field textarea:focus,
+.dash-search:focus,
+.dash-select:focus,
+.dash-custom-range input:focus {
+  outline: none;
+  border-color: #d8b269;
+  box-shadow: 0 0 0 3px rgba(216, 178, 105, 0.18);
+}
+
+.dash-field textarea {
+  resize: vertical;
+}
+
+/* Native widgets — dropdown popups, date pickers, scrollbars — are drawn by
+   the browser, not by the rules above. Declaring the scheme at the root is
+   what gets them rendered dark; without it the popup paints on white while
+   each <option> inherits the light text colour, leaving the list unreadable. */
+html {
+  color-scheme: dark;
+}
+
+/* Belt and braces: some platforms still paint the popup light regardless of
+   color-scheme, and background/colour on <option> is one of the few things
+   they do honour there. */
+.dash-select option,
+.dash-field select option {
+  background-color: #1c1c19;
+  color: #f0ece1;
+}
+
+/* ---------- Buttons ---------- */
+
+.dash-btn {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.65rem 1.2rem;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.dash-btn-primary {
+  background: linear-gradient(135deg, #e8c583, #c89a4a);
+  color: #1a1509;
+  box-shadow: 0 8px 22px rgba(216, 178, 105, 0.25);
+}
+
+.dash-btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(216, 178, 105, 0.35);
+}
+
+.dash-btn-ghost {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: #f0ece1;
+}
+
+.dash-btn-ghost:hover {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.dash-btn-danger {
+  background: rgba(190, 70, 70, 0.14);
+  border-color: rgba(224, 130, 127, 0.4);
+  color: #e0827f;
+}
+
+.dash-btn-danger:hover {
+  background: rgba(190, 70, 70, 0.25);
+}
+
+.dash-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.dash-btn-block {
+  display: block;
+  width: 100%;
+  margin-top: 0.4rem;
+}
+
+.dash-link-btn {
+  display: block;
+  width: 100%;
+  margin-top: 0.9rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.8rem;
+  color: rgba(240, 236, 225, 0.5);
+  text-align: center;
+  transition: color 0.2s ease;
+}
+
+.dash-link-btn:hover {
+  color: #d8b269;
+}
+
+.dash-error {
+  color: #e0827f;
+  font-size: 0.8rem;
+  margin-bottom: 0.8rem;
+  line-height: 1.5;
+}
+
+.dash-note {
+  color: #9fc48f;
+  font-size: 0.8rem;
+  margin-bottom: 0.8rem;
+  line-height: 1.5;
+}
+
+/* ---------- Header ---------- */
+
+.dash-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 1.1rem 1.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.02);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.dash-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.dash-header-logo {
+  height: 26px;
+  width: auto;
+  display: block;
+}
+
+.dash-header-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(240, 236, 225, 0.7);
+}
+
+.dash-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.dash-user {
+  font-size: 0.8rem;
+  color: rgba(240, 236, 225, 0.5);
+}
+
+/* ---------- Layout ---------- */
+
+.dash-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.8rem;
+}
+
+/* ---------- Stats ---------- */
+
+.dash-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.8rem;
+}
+
+.dash-stat {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.2rem 1.3rem;
+}
+
+.dash-stat-value {
+  display: block;
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #f0ece1;
+  line-height: 1.1;
+}
+
+.dash-stat-label {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.76rem;
+  color: rgba(240, 236, 225, 0.5);
+}
+
+/* ---------- Filters ---------- */
+
+.dash-filters {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 16px;
+  padding: 1.1rem 1.2rem;
+  margin-bottom: 1.4rem;
+}
+
+.dash-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.dash-filter-row + .dash-filter-row {
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.dash-filter-row .dash-search {
+  flex: 1 1 220px;
+  width: auto;
+}
+
+.dash-filter-row .dash-select {
+  width: auto;
+  flex: 0 1 auto;
+}
+
+.dash-segment {
+  display: inline-flex;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  padding: 3px;
+}
+
+.dash-segment-btn {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: rgba(240, 236, 225, 0.6);
+  background: none;
+  border: none;
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.dash-segment-btn.is-active {
+  background: rgba(216, 178, 105, 0.9);
+  color: #1a1509;
+  font-weight: 600;
+}
+
+.dash-chips {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.dash-chip {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: rgba(240, 236, 225, 0.65);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  padding: 0.42rem 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.dash-chip:hover {
+  border-color: rgba(255, 255, 255, 0.32);
+}
+
+.dash-chip.is-active {
+  background: linear-gradient(135deg, #e8c583, #c89a4a);
+  border-color: #e8c583;
+  color: #1a1509;
+  font-weight: 600;
+}
+
+.dash-custom-range {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: rgba(240, 236, 225, 0.5);
+}
+
+.dash-custom-range input {
+  width: auto;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.8rem;
+}
+
+/* ---------- Results ---------- */
+
+.dash-count {
+  font-size: 0.8rem;
+  color: rgba(240, 236, 225, 0.45);
+  margin-bottom: 0.8rem;
+}
+
+.dash-day-group {
+  margin-bottom: 1.4rem;
+}
+
+.dash-day-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0 0.2rem 0.6rem 0.2rem;
+}
+
+.dash-day-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #f0ece1;
+}
+
+.dash-day-meta {
+  font-size: 0.74rem;
+  color: rgba(240, 236, 225, 0.4);
+}
+
+.dash-row {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1.1fr) minmax(0, 1.4fr) auto;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  color: #f0ece1;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+}
+
+.dash-row:hover {
+  border-color: rgba(216, 178, 105, 0.5);
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-1px);
+}
+
+.dash-row-time {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.dash-row-sub {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: rgba(240, 236, 225, 0.45);
+  margin-top: 0.15rem;
+}
+
+.dash-row-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.dash-row-service {
+  font-size: 0.82rem;
+  color: rgba(240, 236, 225, 0.65);
+}
+
+.dash-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.32rem 0.7rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.dash-badge-new { background: rgba(216, 178, 105, 0.18); color: #e8c583; border: 1px solid rgba(216, 178, 105, 0.45); }
+.dash-badge-contacted { background: rgba(120, 165, 210, 0.15); color: #9fc0e0; border: 1px solid rgba(120, 165, 210, 0.4); }
+.dash-badge-confirmed { background: rgba(120, 190, 130, 0.15); color: #9fc48f; border: 1px solid rgba(120, 190, 130, 0.4); }
+.dash-badge-completed { background: rgba(255, 255, 255, 0.07); color: rgba(240, 236, 225, 0.6); border: 1px solid rgba(255, 255, 255, 0.16); }
+.dash-badge-cancelled { background: rgba(190, 70, 70, 0.14); color: #e0827f; border: 1px solid rgba(224, 130, 127, 0.35); }
+
+.dash-empty {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: rgba(240, 236, 225, 0.4);
+  font-size: 0.88rem;
+}
+
+/* ---------- Detail drawer ---------- */
+
+.dash-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 20;
+}
+
+.dash-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(440px, 100%);
+  z-index: 21;
+  background: #14140f;
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: -30px 0 70px rgba(0, 0, 0, 0.55);
+  display: flex;
+  flex-direction: column;
+  animation: dash-drawer-in 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes dash-drawer-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.dash-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 1.4rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dash-drawer-head h2 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.dash-drawer-close {
+  background: none;
+  border: none;
+  color: rgba(240, 236, 225, 0.5);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.dash-drawer-close:hover {
+  color: #f0ece1;
+}
+
+.dash-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.4rem;
+}
+
+.dash-detail {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.65rem 1rem;
+  margin-bottom: 1.6rem;
+  padding-bottom: 1.4rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.dash-detail dt {
+  font-size: 0.76rem;
+  color: rgba(240, 236, 225, 0.45);
+}
+
+.dash-detail dd {
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: right;
+  word-break: break-word;
+}
+
+.dash-detail dd a {
+  color: #e8c583;
+  text-decoration: none;
+}
+
+.dash-detail dd a:hover {
+  text-decoration: underline;
+}
+
+.dash-detail-quote {
+  font-weight: 400;
+  color: rgba(240, 236, 225, 0.75);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.dash-select-block {
+  width: 100%;
+}
+
+.dash-drawer-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 1.4rem;
+  flex-wrap: wrap;
+}
+
+.dash-drawer-actions-right {
+  display: flex;
+  gap: 0.6rem;
+  margin-left: auto;
+}
+
+.dash-email-state {
+  font-size: 0.78rem;
+  color: rgba(240, 236, 225, 0.45);
+  line-height: 1.5;
+  margin-bottom: 0.8rem;
+}
+
+.dash-email-state.is-sent {
+  color: #9fc48f;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 720px) {
+  .dash-main,
+  .dash-header {
+    padding: 1.1rem;
+  }
+
+  .dash-row {
+    grid-template-columns: 1fr auto;
+    row-gap: 0.4rem;
+  }
+
+  .dash-row-service {
+    grid-column: 1 / -1;
+  }
+}

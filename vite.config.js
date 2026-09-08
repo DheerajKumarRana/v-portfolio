@@ -12,6 +12,11 @@ export default defineConfig({
         photo: resolve(__dirname, 'photo.html'),
         services: resolve(__dirname, 'services.html'),
         tag: resolve(__dirname, 'tag.html'),
+        subscription: resolve(__dirname, 'subscription.html'),
+        booking: resolve(__dirname, 'booking.html'),
+        // Owner-only pages — reachable by direct URL, never linked publicly.
+        dashboard: resolve(__dirname, 'dashboard.html'),
+        resetPassword: resolve(__dirname, 'reset-password.html'),
       },
     },
   },

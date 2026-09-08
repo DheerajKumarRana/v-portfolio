@@ -7,8 +7,8 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   height: auto;
-  background-color: #faf9f5;
-  color: #3d3929;
+  background-color: #0d0d0e;
+  color: #f0ece1;
 }
 
 .sub-page {
@@ -51,7 +51,7 @@ body {
   font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #3d3929;
+  color: #f0ece1;
   margin-bottom: 3rem;
 }
 
@@ -103,7 +103,7 @@ body {
 }
 
 .sub-char-dim {
-  color: #3d3929;
+  color: #f0ece1;
   opacity: 0.22;
 }
 
@@ -111,7 +111,7 @@ body {
   position: absolute;
   left: 0;
   top: 0;
-  color: #3d3929;
+  color: #f0ece1;
   transform: translateY(110%);
 }
 

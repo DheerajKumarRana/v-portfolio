@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Owner-only tool: keep it out of search results, and it's deliberately
+         not linked from the public nav dial on any page. -->
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Enquiries | Vistaar Media</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./dashboard.css">
+  </head>
+  <body>
+    <!-- ============ LOGIN GATE ============ -->
+    <div class="dash-gate" id="dash-gate" hidden>
+      <div class="dash-gate-card">
+        <img src="/vistaarlogo.webp" alt="Vistaar" class="dash-gate-logo" />
+
+        <!-- Sign in -->
+        <form id="dash-login-form">
+          <h1 class="dash-gate-title">Enquiry dashboard</h1>
+          <p class="dash-gate-sub">Sign in with your studio account.</p>
+
+          <div class="dash-field">
+            <label for="dash-login-email">Email</label>
+            <input type="email" id="dash-login-email" autocomplete="username" required />
+          </div>
+          <div class="dash-field">
+            <label for="dash-login-password">Password</label>
+            <input type="password" id="dash-login-password" autocomplete="current-password" required />
+          </div>
+
+          <p class="dash-error" id="dash-login-error" hidden></p>
+
+          <button type="submit" class="dash-btn dash-btn-primary dash-btn-block" id="dash-login-submit">Sign in</button>
+          <button type="button" class="dash-link-btn" id="dash-show-forgot">Forgot password?</button>
+        </form>
+
+        <!-- Forgot password -->
+        <form id="dash-forgot-form" hidden>
+          <h1 class="dash-gate-title">Reset password</h1>
+          <p class="dash-gate-sub">We'll email you a link to set a new password.</p>
+
+          <div class="dash-field">
+            <label for="dash-forgot-email">Email</label>
+            <input type="email" id="dash-forgot-email" autocomplete="username" required />
+          </div>
+
+          <p class="dash-note" id="dash-forgot-note" hidden></p>
+
+          <button type="submit" class="dash-btn dash-btn-primary dash-btn-block" id="dash-forgot-submit">Send reset link</button>
+          <button type="button" class="dash-link-btn" id="dash-show-login">&larr; Back to sign in</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ============ DASHBOARD ============ -->
+    <div class="dash-app" id="dash-app" hidden>
+      <header class="dash-header">
+        <div class="dash-header-left">
+          <img src="/vistaarlogo.webp" alt="Vistaar" class="dash-header-logo" />
+          <span class="dash-header-title">Enquiries</span>
+        </div>
+        <div class="dash-header-right">
+          <span class="dash-user" id="dash-user-email"></span>
+          <button type="button" class="dash-btn dash-btn-ghost" id="dash-refresh">Refresh</button>
+          <button type="button" class="dash-btn dash-btn-ghost" id="dash-logout">Sign out</button>
+        </div>
+      </header>
+
+      <main class="dash-main">
+        <!-- Stat tiles -->
+        <section class="dash-stats">
+          <div class="dash-stat">
+            <span class="dash-stat-value" id="dash-stat-new">—</span>
+            <span class="dash-stat-label">New enquiries</span>
+          </div>
+          <div class="dash-stat">
+            <span class="dash-stat-value" id="dash-stat-upcoming">—</span>
+            <span class="dash-stat-label">Sessions next 7 days</span>
+          </div>
+          <div class="dash-stat">
+            <span class="dash-stat-value" id="dash-stat-month">—</span>
+            <span class="dash-stat-label">Received this month</span>
+          </div>
+        </section>
+
+        <!-- Filters -->
+        <section class="dash-filters">
+          <div class="dash-filter-row">
+            <div class="dash-segment" id="dash-date-field" role="group" aria-label="Filter dates by">
+              <button type="button" class="dash-segment-btn is-active" data-field="starts_at">Session date</button>
+              <button type="button" class="dash-segment-btn" data-field="created_at">Submitted date</button>
+            </div>
+
+            <div class="dash-chips" id="dash-presets" role="group" aria-label="Date range"></div>
+
+            <div class="dash-custom-range" id="dash-custom-range" hidden>
+              <input type="date" id="dash-from" aria-label="From date" />
+              <span>&rarr;</span>
+              <input type="date" id="dash-to" aria-label="To date" />
+            </div>
+          </div>
+
+          <div class="dash-filter-row">
+            <div class="dash-chips" id="dash-status-chips" role="group" aria-label="Status"></div>
+          </div>
+
+          <div class="dash-filter-row">
+            <input type="search" id="dash-search" class="dash-search" placeholder="Search name, email or phone..." />
+            <select id="dash-service" class="dash-select" aria-label="Service">
+              <option value="">All services</option>
+            </select>
+            <select id="dash-sort" class="dash-select" aria-label="Sort">
+              <option value="date_asc">Session date — soonest</option>
+              <option value="date_desc">Session date — latest</option>
+              <option value="created_desc">Submitted — newest</option>
+              <option value="created_asc">Submitted — oldest</option>
+            </select>
+            <button type="button" class="dash-btn dash-btn-ghost" id="dash-reset-filters">Reset</button>
+            <button type="button" class="dash-btn dash-btn-ghost" id="dash-export">Export CSV</button>
+          </div>
+        </section>
+
+        <!-- Results -->
+        <section class="dash-results">
+          <p class="dash-count" id="dash-count"></p>
+          <div id="dash-list" class="dash-list"></div>
+          <button type="button" class="dash-btn dash-btn-ghost dash-btn-block" id="dash-load-more" hidden>Load more</button>
+        </section>
+      </main>
+    </div>
+
+    <!-- ============ DETAIL DRAWER ============ -->
+    <div class="dash-drawer-backdrop" id="dash-drawer-backdrop" hidden></div>
+    <aside class="dash-drawer" id="dash-drawer" hidden aria-label="Enquiry detail">
+      <header class="dash-drawer-head">
+        <h2 id="dash-drawer-title">Enquiry</h2>
+        <button type="button" class="dash-drawer-close" id="dash-drawer-close" aria-label="Close">&times;</button>
+      </header>
+
+      <div class="dash-drawer-body">
+        <dl class="dash-detail" id="dash-detail"></dl>
+
+        <div class="dash-field">
+          <label for="dash-detail-status">Status</label>
+          <select id="dash-detail-status" class="dash-select dash-select-block"></select>
+        </div>
+
+        <div class="dash-field">
+          <label for="dash-detail-notes">Internal notes <span class="dash-field-hint">(only you see these)</span></label>
+          <textarea id="dash-detail-notes" rows="5" placeholder="Called on Tuesday, sending quote..."></textarea>
+        </div>
+
+        <!-- Setting status to Confirmed sends the client their confirmation
+             email automatically; this line reports whether it went out. -->
+        <p class="dash-email-state" id="dash-detail-email-state"></p>
+
+        <p class="dash-error" id="dash-detail-error" hidden></p>
+        <p class="dash-note" id="dash-detail-saved" hidden>Saved.</p>
+
+        <div class="dash-drawer-actions">
+          <button type="button" class="dash-btn dash-btn-danger" id="dash-detail-delete">Delete</button>
+          <div class="dash-drawer-actions-right">
+            <button type="button" class="dash-btn dash-btn-ghost" id="dash-detail-resend">Resend confirmation</button>
+            <button type="button" class="dash-btn dash-btn-primary" id="dash-detail-save">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <p class="dash-boot" id="dash-boot">Loading...</p>
+
+    <script type="module" src="/dashboard.js"></script>
+  </body>
+</html>

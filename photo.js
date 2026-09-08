@@ -1,4 +1,5 @@
 import { initDial } from './dial.js';
+import { initStarfield } from './starfield.js';
 import { SERVICES } from './servicesData.js';
 
 // ==========================================
@@ -255,6 +256,7 @@ window.addEventListener('resize', () => {
 // 8. MENU INTERACTION (Rainbow Arch) — shared dial module
 // ==========================================
 initDial();
+initStarfield();
 
 // Sub-menu interaction remains flat text
 const submenuItems = document.querySelectorAll('.submenu-item');

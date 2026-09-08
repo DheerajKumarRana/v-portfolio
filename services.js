@@ -1,4 +1,5 @@
 import { initDial } from './dial.js';
+import { initStarfield } from './starfield.js';
 import { initFrameGrid } from './frameGrid.js';
 import { SERVICES } from './servicesData.js';
 
@@ -16,6 +17,7 @@ initFrameGrid(document.getElementById('frame-grid'), SERVICES.map((service) => (
 })));
 
 // ==========================================
-// SHARED NAV DIAL
+// SHARED NAV DIAL + BACKGROUND
 // ==========================================
 initDial();
+initStarfield();
