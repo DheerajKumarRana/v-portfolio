@@ -429,13 +429,23 @@ bookForm.addEventListener('submit', async (event) => {
   submitBtn.textContent = 'Confirm Booking';
 
   if (error) {
+    console.error('Booking insert failed', error);
+
     // Postgres exclusion-constraint violation -> someone else took this
     // slot between it being shown and this submit.
     if (error.code === '23P01') {
       showFormError('That slot was just booked by someone else — please go back and pick another time.');
+    } else if (!error.code && !error.status) {
+      // supabase-js reports a blocked or dropped request with no Postgres
+      // code and no HTTP status. A browser extension blocking the request
+      // is the usual culprit, and "try again" sends people in circles when
+      // that's what happened.
+      showFormError('Couldn’t reach our booking server. Check your connection (or an ad/privacy blocker) and try again.');
     } else {
-      showFormError('Something went wrong saving your booking. Please try again.');
-      console.error(error);
+      // Naming the code turns an unreproducible "something went wrong" into
+      // something a person can actually report back to us.
+      const detail = error.code ? ` (code ${error.code})` : '';
+      showFormError(`Something went wrong saving your booking${detail}. Please try again, or email us if it keeps happening.`);
     }
     return;
   }
