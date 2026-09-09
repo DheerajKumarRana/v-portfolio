@@ -24,11 +24,13 @@ create table if not exists bookings (
 
 alter table bookings enable row level security;
 
--- Visitors can create bookings...
+-- Visitors can create bookings. `authenticated` is included because the
+-- owner browses the public site with a dashboard session in storage, so
+-- their booking arrives as that role rather than anon (see 005).
 drop policy if exists "public can insert bookings" on bookings;
 create policy "public can insert bookings"
   on bookings for insert
-  to anon
+  to anon, authenticated
   with check (true);
 
 -- ...but cannot read, edit, or delete any row directly (bookings hold PII:
